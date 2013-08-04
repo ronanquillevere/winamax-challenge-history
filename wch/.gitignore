@@ -1,3 +1,6 @@
 /target
 /wchTest-dev.launch
 /wchTest-prod.launch
+/.settings
+.project
+.classpath
