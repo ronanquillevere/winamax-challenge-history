@@ -56,6 +56,11 @@
 			<artifactId>jsoup</artifactId>
 			<version>1.7.2</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -74,7 +79,7 @@
 						<goals>
 							<goal>compile</goal>
 							<goal>test</goal>
-							<goal>i18n</goal>
+							<!-- <goal>i18n</goal> -->
 							<goal>generateAsync</goal>
 						</goals>
 					</execution>
@@ -84,7 +89,7 @@
 				<configuration>
 					<runTarget>wch.html</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
-					<i18nMessagesBundle>com.usesoft.poker.client.Messages</i18nMessagesBundle>
+					<!-- <i18nMessagesBundle>com.usesoft.poker.client.Messages</i18nMessagesBundle> -->
 				</configuration>
 			</plugin>
 
