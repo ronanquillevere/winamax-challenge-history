@@ -1,14 +1,11 @@
 package com.usesoft.poker.server.domain.model.player;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import com.usesoft.poker.server.domain.common.BaseValueObject;
-import com.usesoft.poker.server.domain.model.player.PlayerName;
+import com.usesoft.poker.server.domain.model.common.EntityUtil;
 
 public class TestPlayer {
 
@@ -24,16 +21,11 @@ public class TestPlayer {
     @Test
     public void test() {
         String n = "toto";
-        Player player1 = new Player(new PlayerName(n));
-        Player player2 = new Player(new PlayerName(n));
-        Player player3 = new Player(new PlayerName("TOTO"));
+        Player p = new Player(new PlayerName(n));
+        Player p2 = new Player(new PlayerName(n));
+        Player p3 = new Player(new PlayerName("TOTO"));
 
-        assertFalse(player1 == player2);
-        assertTrue(player1.equals(player2));
-        assertFalse(player1.equals(player3));
-
-        assertTrue(player1.sameIdentityAs(player2));
-        assertFalse(player1.sameIdentityAs(player3));
+        EntityUtil.checkValues(p, p2, p3);
     }
     
     @Test

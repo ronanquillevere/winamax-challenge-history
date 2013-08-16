@@ -12,14 +12,17 @@ public class Player extends BaseEntity<Player>{
 	}
 
 	public boolean sameIdentityAs(Player other) {
-        return other != null && playerName.sameValueAs(other.playerName);
+        return other != null && getPlayerName().sameValueAs(other.getPlayerName());
     }
    
 	@Override
 	public String toString() {
-	    return playerName.toString();
+	    return getPlayerName().toString();
 	}
 	
+    public PlayerName getPlayerName() {
+        return playerName;
+    }
+
     private final PlayerName playerName;
-    
 }

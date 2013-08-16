@@ -4,9 +4,9 @@ import java.util.Date;
 
 import org.apache.commons.lang3.Validate;
 
-import com.usesoft.poker.server.domain.common.ValueObject;
+import com.usesoft.poker.server.domain.common.BaseValueObject;
 
-public class Period implements ValueObject<Period>{
+public class Period extends BaseValueObject<Period>{
 
     public Period(Date start, Date end) {
         Validate.notNull(start, "Start date is required");
@@ -15,24 +15,29 @@ public class Period implements ValueObject<Period>{
         this.end = end;
     }
 
-    
-    @Override
-    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
-
-      Period other = (Period) o;
-
-      return sameValueAs(other);
-    }
-
     @Override
     public boolean sameValueAs(Period other) {
       return other != null 
-              && this.start.equals(other.start) 
-              && this.end.equals(other.end);
+              && this.getStart().equals(other.getStart()) 
+              && this.getEnd().equals(other.getEnd());
     }
     
+    @Override
+    public String toString() {
+        return start.toString() + " -> " + end.toString();
+    }
+    
+    //Return a copy to avoid modification without permission
+    public Date getStart() {
+        return new Date(start.getTime());
+    }
+    
+    //Return a copy to avoid modification without permission
+    public Date getEnd() {
+        return new Date(end.getTime());
+    }
+    
+
     private final Date start;
     private final Date end;
     

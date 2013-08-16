@@ -8,12 +8,12 @@
   <!-- Servlets -->
   <servlet>
     <servlet-name>Crawler</servlet-name>
-    <servlet-class>com.usesoft.poker.server.Crawler</servlet-class>
+    <servlet-class>com.usesoft.poker.server.interfaces.CashGameCrawler</servlet-class>
   </servlet>
 
   <servlet-mapping>
     <servlet-name>Crawler</servlet-name>
-    <url-pattern>/wch/crawler</url-pattern>
+    <url-pattern>/wch/crawler/cashgame/micro</url-pattern>
   </servlet-mapping>
 
   <!-- Default page to serve -->
