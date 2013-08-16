@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.apache.commons.lang3.Validate;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.usesoft.poker.server.domain.common.BaseEntity;
 import com.usesoft.poker.server.domain.model.performance.Period;
 import com.usesoft.poker.server.domain.model.performance.Stake;
@@ -14,8 +15,8 @@ import com.usesoft.poker.server.infrastructure.pattern.Filterable;
 public class CashGamePerformance extends BaseEntity<CashGamePerformance>
         implements Filterable<CashGamePerformance> {
 
-    public CashGamePerformance(Player player, Period period, Stake stake,
-            Date lastUpdate) {
+    public CashGamePerformance(@JsonProperty("player") Player player, @JsonProperty("period") Period period, @JsonProperty("stake") Stake stake,
+            @JsonProperty("lastUpdate") Date lastUpdate) {
         Validate.notNull(player, "Player is required.");
         Validate.notNull(period, "Period is required.");
         Validate.notNull(stake, "Stake is required.");

@@ -5,20 +5,41 @@
 
 <web-app>
 
-  <!-- Servlets -->
-  <servlet>
-    <servlet-name>Crawler</servlet-name>
-    <servlet-class>com.usesoft.poker.server.interfaces.CashGameCrawler</servlet-class>
-  </servlet>
+	<!-- Servlets -->
+	<servlet>
+		<servlet-name>Crawler</servlet-name>
+		<servlet-class>com.usesoft.poker.server.interfaces.CashGameCrawler</servlet-class>
+	</servlet>
 
-  <servlet-mapping>
-    <servlet-name>Crawler</servlet-name>
-    <url-pattern>/wch/crawler/cashgame/micro</url-pattern>
-  </servlet-mapping>
+	<servlet>
+		<!-- <servlet-name>Jersey Web Application</servlet-name> <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class> 
+			<init-param> <param-name>javax.ws.rs.Application</param-name> <param-value>com.usesoft.poker.server.infrastructure.servlet.MyApplication</param-value> 
+			</init-param> -->
 
-  <!-- Default page to serve -->
-  <welcome-file-list>
-    <welcome-file>wch.html</welcome-file>
-  </welcome-file-list>
+		<servlet-name>Jersey Web Application</servlet-name>
+		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+		<init-param>
+			<param-name>jersey.config.server.provider.packages</param-name>
+			<param-value>com.usesoft.poker.server.interfaces.resources</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>Crawler</servlet-name>
+		<url-pattern>/wch/crawler/cashgame/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>Jersey Web Application</servlet-name>
+		<url-pattern>/api/*</url-pattern>
+	</servlet-mapping>
+
+
+
+	<!-- Default page to serve -->
+	<welcome-file-list>
+		<welcome-file>wch.html</welcome-file>
+	</welcome-file-list>
 
 </web-app>

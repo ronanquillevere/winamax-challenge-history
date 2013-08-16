@@ -4,11 +4,12 @@ import java.util.Date;
 
 import org.apache.commons.lang3.Validate;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.usesoft.poker.server.domain.common.BaseValueObject;
 
 public class Period extends BaseValueObject<Period>{
 
-    public Period(Date start, Date end) {
+    public Period(@JsonProperty("start")Date start, @JsonProperty("end")Date end) {
         Validate.notNull(start, "Start date is required");
         Validate.notNull(end, "Start date is required");
         this.start = start;

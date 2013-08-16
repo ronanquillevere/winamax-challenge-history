@@ -2,17 +2,18 @@ package com.usesoft.poker.server.domain.model.player;
 
 import org.apache.commons.lang3.Validate;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.usesoft.poker.server.domain.common.BaseValueObject;
 
 public class PlayerName extends BaseValueObject<PlayerName> {
 
-    public PlayerName(String name) {
+    public PlayerName(@JsonProperty("name") String name) {
         Validate.notNull(name);
         this.name = name;
     }
 
     public boolean sameValueAs(PlayerName other) {
-          return other != null && this.name.equals(other.name);
+          return other != null && this.getName().equals(other.getName());
     }
 
     @Override
@@ -20,6 +21,10 @@ public class PlayerName extends BaseValueObject<PlayerName> {
         return name;
     }
     
+    public String getName() {
+        return name;
+    }
+
     private final String name;
     private static final long serialVersionUID = 1L;
 }

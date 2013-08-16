@@ -1,12 +1,11 @@
 package com.usesoft.poker.server.domain.common;
 
-import java.io.Serializable;
 
 /**
  * A value object, as described in the DDD book.
  * 
  */
-public interface ValueObject<T> extends Serializable {
+public interface ValueObject<T> /*extends Serializable */{
 
   /**
    * Value objects compare by the values of their attributes, they don't have an identity.

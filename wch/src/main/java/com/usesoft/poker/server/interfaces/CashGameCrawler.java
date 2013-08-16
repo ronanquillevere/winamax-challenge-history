@@ -17,11 +17,7 @@ import com.usesoft.poker.server.domain.model.performance.Stake;
 
 public class CashGameCrawler extends HttpServlet {
 
-    private static final String MICRO_URl = "http://127.0.0.1:8888/mock/mockcashgamemicro.html";
-	private static final String SMALL_URl = "http://127.0.0.1:8888/mock/mockcashgamemicro.html";
-	private static final String MEDIUM_URl = "http://127.0.0.1:8888/mock/mockcashgamemicro.html";
-	private static final String HIGH_URl = "http://127.0.0.1:8888/mock/mockcashgamemicro.html";
-    
+
     @Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -47,6 +43,12 @@ public class CashGameCrawler extends HttpServlet {
         LOGGER.debug("Choosing winanamax url from crawler url : {}", requestURI);
         if (requestURI.contains("micro"))
             return MICRO_URl;
+        else if (requestURI.contains("small"))
+            return SMALL_URl;
+        else if (requestURI.contains("medium"))
+            return MEDIUM_URl;
+        else if (requestURI.contains("high"))
+            return HIGH_URl;
         return MICRO_URl;
     }
     
@@ -65,4 +67,9 @@ public class CashGameCrawler extends HttpServlet {
     }
     
     private static final Logger LOGGER = LoggerFactory.getLogger(CashGameCrawler.class);
+    private static final long serialVersionUID = 1L;
+    private static final String MICRO_URl = "https://www.winamax.fr/les-challenges-winamax_cash-game_classement-micro-limites";
+    private static final String SMALL_URl = "https://www.winamax.fr/les-challenges-winamax_cash-game_classement-basses-limites";
+    private static final String MEDIUM_URl = "https://www.winamax.fr/les-challenges-winamax_cash-game_classement-moyennes-limites";
+    private static final String HIGH_URl = "https://www.winamax.fr/les-challenges-winamax_cash-game_classement-hautes-limites";
 }
