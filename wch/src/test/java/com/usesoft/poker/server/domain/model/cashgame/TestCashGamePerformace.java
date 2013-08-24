@@ -12,6 +12,7 @@ import com.usesoft.poker.server.domain.model.performance.Period;
 import com.usesoft.poker.server.domain.model.performance.Stake;
 import com.usesoft.poker.server.domain.model.player.Player;
 import com.usesoft.poker.server.domain.model.player.PlayerName;
+import com.usesoft.poker.server.infrastructure.persistence.datastore.PeriodRepositoryDatastore;
 
 public class TestCashGamePerformace {
     @Test

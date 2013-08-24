@@ -17,14 +17,14 @@ import com.usesoft.poker.server.domain.model.player.Player;
 import com.usesoft.poker.server.domain.model.player.PlayerName;
 import com.usesoft.poker.server.domain.model.player.PlayerRepository;
 import com.usesoft.poker.server.infrastructure.CrawlerUtil;
+import com.usesoft.poker.server.infrastructure.persistence.datastore.PeriodRepositoryDatastore;
 import com.usesoft.poker.server.infrastructure.persistence.inmemory.CashGamePerformanceRepositoryInMemory;
-import com.usesoft.poker.server.infrastructure.persistence.inmemory.PeriodRepositoryInMemory;
 import com.usesoft.poker.server.infrastructure.persistence.inmemory.PlayerRepositoryInMemory;
 
 public class CashGameParser {
     //TODO @rqu the implementation should be injected
     public static final CashGameParser INSTANCE = new CashGameParser(CashGamePerformanceRepositoryInMemory.INSTANCE,
-            PeriodRepositoryInMemory.INSTANCE, PlayerRepositoryInMemory.INSTANCE);
+            PeriodRepositoryDatastore.INSTANCE, PlayerRepositoryInMemory.INSTANCE);
     
     private CashGameParser(CashGamePerformanceRepository repository, PeriodRepository periodRepo, PlayerRepository playerRepo) {
         this.perfRepository = repository;

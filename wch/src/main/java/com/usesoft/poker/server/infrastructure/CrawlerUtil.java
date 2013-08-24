@@ -2,7 +2,9 @@ package com.usesoft.poker.server.infrastructure;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -12,6 +14,7 @@ import org.jsoup.select.Elements;
 public class CrawlerUtil {
     private static final SimpleDateFormat SDF = new SimpleDateFormat(
             "dd MMMM yyyy", Locale.FRANCE);
+    private static GregorianCalendar calendar = new GregorianCalendar();
 
     private CrawlerUtil() {
     }
@@ -27,7 +30,11 @@ public class CrawlerUtil {
         String periode = unescapeDatePeriod(document);
         String end = periode.substring(30, 42);
 
-        return SDF.parse(end);
+        Date date = SDF.parse(end);
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        calendar.add(Calendar.MILLISECOND, -1);
+        return calendar.getTime();
     }
 
     private static String unescapeDatePeriod(Document document) {
