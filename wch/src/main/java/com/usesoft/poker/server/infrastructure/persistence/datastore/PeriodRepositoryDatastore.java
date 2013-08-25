@@ -63,10 +63,6 @@ public class PeriodRepositoryDatastore implements PeriodRepository {
     }
 
 
-    public static String getPeriodTypeName() {
-        return Period.class.getName().substring(Period.class.getName().lastIndexOf(".")+1);
-    }
-
     @Override
     public Period find(Date startDate, Date endDate) {
         
@@ -82,6 +78,11 @@ public class PeriodRepositoryDatastore implements PeriodRepository {
             return null;
         
         return buildPeriodFromEntity(pq.asIterable().iterator().next());
+    }
+
+
+    private static String getPeriodTypeName() {
+        return Period.class.getName().substring(Period.class.getName().lastIndexOf(".")+1);
     }
 
 
