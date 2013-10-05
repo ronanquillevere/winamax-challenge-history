@@ -9,12 +9,12 @@ import org.jsoup.nodes.Document;
 
 import com.usesoft.poker.server.domain.model.cashgame.CashGamePerformance;
 import com.usesoft.poker.server.domain.model.cashgame.CashGamePerformanceRepository;
+import com.usesoft.poker.server.domain.model.cashgame.Stake;
 import com.usesoft.poker.server.domain.model.player.Player;
 import com.usesoft.poker.server.domain.model.player.PlayerName;
 import com.usesoft.poker.server.domain.model.player.PlayerRepository;
 import com.usesoft.poker.server.domain.model.time.Period;
 import com.usesoft.poker.server.domain.model.time.PeriodRepository;
-import com.usesoft.poker.server.domain.model.time.Stake;
 import com.usesoft.poker.server.infrastructure.CrawlerUtil;
 import com.usesoft.poker.server.infrastructure.persistence.datastore.CashGamePerformanceRepositoryDatastore;
 import com.usesoft.poker.server.infrastructure.persistence.datastore.PeriodRepositoryDatastore;

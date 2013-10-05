@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.jsoup.Jsoup;
 
 import com.usesoft.poker.server.application.CashGameParser;
-import com.usesoft.poker.server.domain.model.time.Stake;
+import com.usesoft.poker.server.domain.model.cashgame.Stake;
 
 public class CashGameCrawler extends HttpServlet {
 

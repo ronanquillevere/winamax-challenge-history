@@ -17,9 +17,9 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.usesoft.poker.server.domain.model.cashgame.CashGamePerformance;
 import com.usesoft.poker.server.domain.model.cashgame.CashGamePerformanceRepository;
+import com.usesoft.poker.server.domain.model.cashgame.Stake;
 import com.usesoft.poker.server.domain.model.player.Player;
 import com.usesoft.poker.server.domain.model.time.Period;
-import com.usesoft.poker.server.domain.model.time.Stake;
 
 public class CashGamePerformanceRepositoryDatastore implements
         CashGamePerformanceRepository {

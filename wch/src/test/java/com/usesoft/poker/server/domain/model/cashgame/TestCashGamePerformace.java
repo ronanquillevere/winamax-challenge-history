@@ -11,7 +11,6 @@ import com.usesoft.poker.server.domain.model.common.EntityUtil;
 import com.usesoft.poker.server.domain.model.player.Player;
 import com.usesoft.poker.server.domain.model.player.PlayerName;
 import com.usesoft.poker.server.domain.model.time.Period;
-import com.usesoft.poker.server.domain.model.time.Stake;
 
 public class TestCashGamePerformace {
     @Test

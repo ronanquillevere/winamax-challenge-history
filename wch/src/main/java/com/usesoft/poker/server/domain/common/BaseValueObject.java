@@ -15,5 +15,4 @@ public abstract class BaseValueObject<T> implements ValueObject<T> {
         return sameValueAs(other);
     }
 
-    private static final long serialVersionUID = 1L;
 }

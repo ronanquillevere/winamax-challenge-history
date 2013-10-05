@@ -1,4 +1,4 @@
-package com.usesoft.poker.server.domain.model.time;
+package com.usesoft.poker.server.domain.model.cashgame;
 
 public enum Stake {
     Micro,

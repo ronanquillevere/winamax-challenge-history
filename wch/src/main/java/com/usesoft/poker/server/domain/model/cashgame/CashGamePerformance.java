@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.usesoft.poker.server.domain.common.BaseEntity;
 import com.usesoft.poker.server.domain.model.player.Player;
 import com.usesoft.poker.server.domain.model.time.Period;
-import com.usesoft.poker.server.domain.model.time.Stake;
 import com.usesoft.poker.server.infrastructure.pattern.Filter;
 import com.usesoft.poker.server.infrastructure.pattern.Filterable;
 
