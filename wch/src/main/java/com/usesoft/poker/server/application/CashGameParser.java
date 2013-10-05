@@ -1,7 +1,9 @@
 package com.usesoft.poker.server.application;
 
 import java.text.ParseException;
+import java.util.Collection;
 import java.util.Date;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.Validate;
@@ -43,19 +45,49 @@ public class CashGameParser
 
     public void parse(Document document, Stake stake) throws ParseException
     {
-
         Validate.notNull(document, "Document is required");
         Validate.notNull(stake, "Stake is required");
-        LOGGER.warning("Parsing Cash Game Performance : Start");
-        LOGGER.warning("Found Stake : " + stake);
 
-        Period period = parsePeriod(document);
+        Period period = parsePeriod(document, stake);
 
-        int numberOfRows = CrawlerUtil.getNumberOfRows(document);
+        int numberOfRows = CrawlerUtil.extractNumberOfRows(document);
 
         parsePerformances(document, stake, period, numberOfRows);
 
-        LOGGER.warning("Parsing Cash Game Performance : End");
+        LOGGER.log(Level.INFO, "Parsing Cash Game Performance : End");
+    }
+
+    private Period parsePeriod(Document document, Stake stake) throws ParseException
+    {
+        Period period = extractPeriod(document);
+        LOGGER.log(Level.INFO, "Period extracted;" + period);
+
+        Period found = periodRepo.find(period.getStart(), period.getEnd());
+
+        if (found != null)
+        {
+            LOGGER.log(Level.INFO, "Period already in db;" + period);
+
+            clearPerformances(period, stake);
+            LOGGER.log(Level.INFO, "Related performaces cleared stake;" + stake);
+
+            return period;
+        }
+
+        periodRepo.store(period);
+        return period;
+    }
+
+    private void clearPerformances(Period period, Stake stake)
+    {
+        Collection<CashGamePerformance> perfs = perfRepository.find(period, stake);
+        LOGGER.log(Level.INFO, "Found old Performances number;" + perfs.size());
+
+        for (CashGamePerformance p : perfs)
+        {
+            perfRepository.remove(p);
+            LOGGER.log(Level.INFO, "Old performance cleared;" + p);
+        }
     }
 
     private CashGamePerformance parsePerformance(Stake stake, Period period, Date now, int nbHands, double buyIns, Player player)
@@ -64,7 +96,6 @@ public class CashGameParser
         perf.setHands(nbHands);
         perf.setBuyIns(buyIns);
         perfRepository.store(perf);
-        LOGGER.warning("Performance stored : " + perf);
         return perf;
     }
 
@@ -74,8 +105,8 @@ public class CashGameParser
 
         for (int i = 1; i <= nbOfRows; i++)
         {
-            int nbHands = CrawlerUtil.getNumberOfHands(document, i);
-            double buyIns = CrawlerUtil.getBuyIns(document, i);
+            int nbHands = CrawlerUtil.extractNumberOfHands(document, i);
+            double buyIns = CrawlerUtil.extractBuyIns(document, i);
 
             Player player = parsePlayer(document, i);
 
@@ -83,22 +114,17 @@ public class CashGameParser
         }
     }
 
-    private Period parsePeriod(Document document) throws ParseException
+    private Period extractPeriod(Document document) throws ParseException
     {
         String periodAsString = CrawlerUtil.extractDatePeriod(document);
-
         Date start = CrawlerUtil.parseStartDate(periodAsString);
         Date end = CrawlerUtil.parseEndDate(periodAsString);
-        Period period1 = new Period(start, end);
-        LOGGER.warning("Found Period : " + period1);
-        Period period = period1;
-        periodRepo.store(period);
-        return period;
+        return new Period(start, end);
     }
 
     private Player parsePlayer(Document document, int i)
     {
-        String playerName = CrawlerUtil.getPlayerName(document, i);
+        String playerName = CrawlerUtil.extractPlayerName(document, i);
         Player player = new Player(new PlayerName(playerName));
         playerRepo.store(player);
         return player;

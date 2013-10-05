@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,7 +25,7 @@ public class CrawlerUtil
 
     private static final Logger LOGGER = Logger.getLogger(CrawlerUtil.class.getName());
 
-    public static double getBuyIns(Document document, int perfIndex)
+    public static double extractBuyIns(Document document, int perfIndex)
     {
         int lookupIndex = 7;
         if (perfIndex > 20)
@@ -33,7 +34,7 @@ public class CrawlerUtil
         return Double.valueOf(value);
     }
 
-    public static int getNumberOfHands(Document document, int perfIndex)
+    public static int extractNumberOfHands(Document document, int perfIndex)
     {
         int lookupIndex = 5;
         if (perfIndex > 20)
@@ -42,15 +43,15 @@ public class CrawlerUtil
         return Integer.valueOf(value);
     }
 
-    public static int getNumberOfRows(Document document)
+    public static int extractNumberOfRows(Document document)
     {
         Elements lines = document.select(".leaderb").get(0).getElementsByTag("tr");
         int count = lines.size() - 2;
-        LOGGER.warning("Found Number of rows : " + count);
+        LOGGER.log(Level.INFO, "Found Number of rows; " + count);
         return count; // header + footer
     }
 
-    public static String getPlayerName(Document document, int perfIndex)
+    public static String extractPlayerName(Document document, int perfIndex)
     {
         int lookupIndex = 3;
         if (perfIndex > 20)
@@ -60,13 +61,20 @@ public class CrawlerUtil
         return value;
     }
 
+    public static String extractDatePeriod(Document document)
+    {
+        String value = convertPeriodElementToString(document);
+        String cleaned = cleanDatePeriod(value);
+        return cleaned;
+    }
+
     public static Date parseEndDate(String period) throws ParseException
     {
         Matcher matcher = pattern.matcher(period);
         matcher.find();
         matcher.find();
         String end = matcher.group(1);
-        LOGGER.warning("Match end : " + end);
+        LOGGER.log(Level.INFO, "Matched end date;" + end);
 
         Date date = SDF.parse(end);
         calendar.setTime(date);
@@ -81,15 +89,8 @@ public class CrawlerUtil
         matcher.find();
         String start = matcher.group(1);
 
-        LOGGER.warning("Match start : " + start);
+        LOGGER.log(Level.INFO, "Matched start date;" + start);
         return SDF.parse(start);
-    }
-
-    public static String extractDatePeriod(Document document)
-    {
-        String value = convertPeriodElementToString(document);
-        String cleaned = cleanDatePeriod(value);
-        return cleaned;
     }
 
     static String cleanDatePeriod(String value)
@@ -121,8 +122,6 @@ public class CrawlerUtil
     // TODO enrich if needed ...
     private static String replaceMonth(String date)
     {
-        LOGGER.warning("Replacing month abreviations : " + date);
-
         date = date.replace("janv.", "Janvier");
         date = date.replace("fev.", "Février");
         date = date.replace("sept.", "Septembre");
@@ -130,7 +129,7 @@ public class CrawlerUtil
         date = date.replace("nov.", "Novembre");
         date = date.replace("dec.", "Décembre");
 
-        LOGGER.warning("New date string : " + date);
+        LOGGER.log(Level.INFO, "Month abreviation replaced;" + date);
         return date;
     }
 

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronentries>
+  <cron>
+    <url>/wch/crawler/cashgame/micro</url>
+    <description>Crawl micro cash game performances</description>
+    <schedule>every 9 minutes</schedule>
+  </cron>
+</cronentries>
