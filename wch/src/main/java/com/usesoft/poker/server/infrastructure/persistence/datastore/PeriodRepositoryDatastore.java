@@ -7,15 +7,17 @@ import java.util.Date;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.usesoft.poker.server.domain.model.performance.Period;
-import com.usesoft.poker.server.domain.model.performance.PeriodRepository;
+import com.usesoft.poker.server.domain.model.time.Period;
+import com.usesoft.poker.server.domain.model.time.PeriodRepository;
 
 public class PeriodRepositoryDatastore implements PeriodRepository {
     
@@ -65,7 +67,10 @@ public class PeriodRepositoryDatastore implements PeriodRepository {
 
     @Override
     public Period find(Date startDate, Date endDate) {
-        
+        return buildPeriodFromEntity(findEntity(startDate, endDate));
+    }
+    
+    public Entity findEntity(Date startDate, Date endDate){
         PreparedQuery pq = getPeriod(startDate, endDate);
         
         int count = pq.countEntities(FetchOptions.Builder.withDefaults());
@@ -77,7 +82,15 @@ public class PeriodRepositoryDatastore implements PeriodRepository {
         if (count == 0)
             return null;
         
-        return buildPeriodFromEntity(pq.asIterable().iterator().next());
+        return pq.asIterable().iterator().next();
+    }
+
+    public Period find(Key key) throws EntityNotFoundException{
+        return buildPeriodFromEntity(datastore.get(key));
+    }
+    
+    public Period findPeriod(Key key) throws EntityNotFoundException {
+        return buildPeriodFromEntity(datastore.get(key));
     }
 
 
@@ -91,7 +104,6 @@ public class PeriodRepositoryDatastore implements PeriodRepository {
     }
 
     private PreparedQuery getPeriod(Date start, Date end) {
-
         Filter startFilter = new FilterPredicate(START_DATE, FilterOperator.EQUAL, start);
         Filter endFilter = new FilterPredicate(END_DATE, FilterOperator.EQUAL, end);
         Filter periodF = CompositeFilterOperator.and(startFilter, endFilter);

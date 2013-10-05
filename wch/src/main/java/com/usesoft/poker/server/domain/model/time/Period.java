@@ -1,13 +1,13 @@
-package com.usesoft.poker.server.domain.model.performance;
+package com.usesoft.poker.server.domain.model.time;
 
 import java.util.Date;
 
 import org.apache.commons.lang3.Validate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.usesoft.poker.server.domain.common.BaseValueObject;
+import com.usesoft.poker.server.domain.common.BaseEntity;
 
-public class Period extends BaseValueObject<Period>{
+public class Period extends BaseEntity<Period>{
 
     public Period(@JsonProperty("start")Date start, @JsonProperty("end")Date end) {
         Validate.notNull(start, "Start date is required");
@@ -17,7 +17,7 @@ public class Period extends BaseValueObject<Period>{
     }
 
     @Override
-    public boolean sameValueAs(Period other) {
+    public boolean sameIdentityAs(Period other) {
       return other != null 
               && this.getStart().equals(other.getStart()) 
               && this.getEnd().equals(other.getEnd());
@@ -41,6 +41,4 @@ public class Period extends BaseValueObject<Period>{
 
     private final Date start;
     private final Date end;
-    
-    private static final long serialVersionUID = 1L;
 }

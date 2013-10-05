@@ -7,7 +7,8 @@ import java.util.Date;
 
 import org.junit.Test;
 
-import com.usesoft.poker.server.domain.model.common.ValueObjectUtil;
+import com.usesoft.poker.server.domain.model.common.EntityUtil;
+import com.usesoft.poker.server.domain.model.time.Period;
 
 public class TestPeriod {
 
@@ -41,7 +42,7 @@ public class TestPeriod {
         Period p2 = new Period(startDate, endDate);
         Period p3 = new Period(startDate2, endDate2);
         
-        ValueObjectUtil.checkValues(p, p2, p3);
+        EntityUtil.checkValues(p, p2, p3);
         
     }
 }

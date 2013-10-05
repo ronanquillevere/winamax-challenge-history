@@ -9,9 +9,9 @@ import org.apache.commons.lang3.Validate;
 
 import com.usesoft.poker.server.domain.model.cashgame.CashGamePerformance;
 import com.usesoft.poker.server.domain.model.cashgame.CashGamePerformanceRepository;
-import com.usesoft.poker.server.domain.model.performance.Period;
-import com.usesoft.poker.server.domain.model.performance.Stake;
 import com.usesoft.poker.server.domain.model.player.Player;
+import com.usesoft.poker.server.domain.model.time.Period;
+import com.usesoft.poker.server.domain.model.time.Stake;
 import com.usesoft.poker.server.infrastructure.pattern.Filter;
 
 public class CashGamePerformanceRepositoryInMemory implements

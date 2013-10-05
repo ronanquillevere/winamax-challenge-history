@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import com.usesoft.poker.server.domain.model.performance.Period;
-import com.usesoft.poker.server.domain.model.performance.PeriodRepository;
+import com.usesoft.poker.server.domain.model.time.Period;
+import com.usesoft.poker.server.domain.model.time.PeriodRepository;
 
 public class PeriodRepositoryInMemory implements PeriodRepository {
 

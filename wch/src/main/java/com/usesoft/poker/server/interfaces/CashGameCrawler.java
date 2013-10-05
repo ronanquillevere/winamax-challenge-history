@@ -2,6 +2,7 @@ package com.usesoft.poker.server.interfaces;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -9,11 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jsoup.Jsoup;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.usesoft.poker.server.application.CashGameParser;
-import com.usesoft.poker.server.domain.model.performance.Stake;
+import com.usesoft.poker.server.domain.model.time.Stake;
 
 public class CashGameCrawler extends HttpServlet {
 
@@ -22,25 +21,25 @@ public class CashGameCrawler extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 	   
-        LOGGER.debug("Crawling data from winamax : Start");
+        LOGGER.warning("Crawling data from winamax : Start");
         
 		String requestURI = req.getRequestURI();
 		
         try {
             CashGameParser.INSTANCE.parse(Jsoup.connect(getUrl(requestURI)).get(), getStake(requestURI));
         } catch (ParseException e) {
-            LOGGER.error("Error while crawling data", e);
+            LOGGER.warning("Error while crawling data " + e);
             resp.getWriter().println("An exception ocured while crawling micro cash game challenge. See log file.");
             return;
         }
 		
         resp.getWriter().println("Micro cash game challenged successfuly crawled.");
-        LOGGER.debug("Crawling data from winamax : End");
+        LOGGER.warning("Crawling data from winamax : End");
 	}
     
 
     private static String getUrl(String requestURI) {
-        LOGGER.debug("Choosing winanamax url from crawler url : {}", requestURI);
+        LOGGER.warning("Choosing winanamax url from crawler url : " + requestURI);
         if (requestURI.contains("micro"))
             return MICRO_URl;
         else if (requestURI.contains("small"))
@@ -53,7 +52,7 @@ public class CashGameCrawler extends HttpServlet {
     }
     
     private static Stake getStake(String requestURI) {
-        LOGGER.debug("Getting stake from crawler url : {}", requestURI);
+        LOGGER.warning("Getting stake from crawler url : " + requestURI);
         if (requestURI.contains("micro"))
             return Stake.Micro;
         else if (requestURI.contains("small"))
@@ -66,7 +65,7 @@ public class CashGameCrawler extends HttpServlet {
         return Stake.Micro;
     }
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(CashGameCrawler.class);
+    private static final Logger LOGGER = Logger.getLogger(CashGameCrawler.class.getName());
     private static final long serialVersionUID = 1L;
     private static final String MICRO_URl = "https://www.winamax.fr/les-challenges-winamax_cash-game_classement-micro-limites";
     private static final String SMALL_URl = "https://www.winamax.fr/les-challenges-winamax_cash-game_classement-basses-limites";

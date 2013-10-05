@@ -2,9 +2,9 @@ package com.usesoft.poker.server.domain.model.cashgame;
 
 import java.util.Collection;
 
-import com.usesoft.poker.server.domain.model.performance.Period;
-import com.usesoft.poker.server.domain.model.performance.Stake;
 import com.usesoft.poker.server.domain.model.player.Player;
+import com.usesoft.poker.server.domain.model.time.Period;
+import com.usesoft.poker.server.domain.model.time.Stake;
 
 
 public interface CashGamePerformanceRepository {

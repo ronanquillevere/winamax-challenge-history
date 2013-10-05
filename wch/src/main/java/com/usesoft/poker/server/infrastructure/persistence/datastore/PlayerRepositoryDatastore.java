@@ -6,7 +6,9 @@ import java.util.Collection;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
@@ -32,9 +34,13 @@ public class PlayerRepositoryDatastore implements PlayerRepository {
         
         return list;
     }
-
+    
     @Override
     public Player find(String playerName) {
+        return buildPlayerFromEntity(findEntity(playerName));
+    }
+    
+    public Entity findEntity(String playerName){
         PreparedQuery pq = getPlayer(playerName);
         
         int count = pq.countEntities(FetchOptions.Builder.withDefaults());
@@ -46,8 +52,13 @@ public class PlayerRepositoryDatastore implements PlayerRepository {
         if (count == 0)
             return null;
         
-        return buildPlayerFromEntity(pq.asIterable().iterator().next());
+        return pq.asIterable().iterator().next();
     }
+    
+    public Player findPlayer(Key key) throws EntityNotFoundException{
+        return buildPlayerFromEntity(datastore.get(key));
+    }
+    
     
     @Override
     public void store(Player player) {

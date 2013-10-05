@@ -6,9 +6,9 @@ import org.apache.commons.lang3.Validate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.usesoft.poker.server.domain.common.BaseEntity;
-import com.usesoft.poker.server.domain.model.performance.Period;
-import com.usesoft.poker.server.domain.model.performance.Stake;
 import com.usesoft.poker.server.domain.model.player.Player;
+import com.usesoft.poker.server.domain.model.time.Period;
+import com.usesoft.poker.server.domain.model.time.Stake;
 import com.usesoft.poker.server.infrastructure.pattern.Filter;
 import com.usesoft.poker.server.infrastructure.pattern.Filterable;
 
@@ -35,7 +35,7 @@ public class CashGamePerformance extends BaseEntity<CashGamePerformance>
     @Override
     public boolean sameIdentityAs(CashGamePerformance other) {
         return other != null && getPlayer().sameIdentityAs(other.getPlayer())
-                && period.sameValueAs(other.period) && stake == other.stake;
+                && period.sameIdentityAs(other.period) && stake == other.stake;
     }
 
     public Period getPeriod() {

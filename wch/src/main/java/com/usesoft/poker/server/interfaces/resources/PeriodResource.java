@@ -8,7 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.usesoft.poker.server.domain.model.performance.Period;
+import com.usesoft.poker.server.domain.model.time.Period;
 import com.usesoft.poker.server.infrastructure.persistence.datastore.PeriodRepositoryDatastore;
 
 @Path("v1/periods")
