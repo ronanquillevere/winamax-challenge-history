@@ -3,6 +3,7 @@
   <cron>
     <url>/wch/crawler/cashgame/micro</url>
     <description>Crawl micro cash game performances</description>
-    <schedule>every 9 minutes</schedule>
+    <schedule>every 9 minutes from 23:30 to 01:30</schedule>
+    <timezone>Europe/Paris</timezone>
   </cron>
 </cronentries>
