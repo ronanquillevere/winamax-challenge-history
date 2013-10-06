@@ -149,7 +149,7 @@ public class CashGamePerformanceRepositoryDatastore implements CashGamePerforman
         for (Entity e : asIterable)
         {
             datastore.delete(e.getKey());
-            LOGGER.log(Level.INFO, "Deleted database entity;" + e);
+            LOGGER.log(Level.FINE, "Deleted database entity;" + e);
         }
     }
 
@@ -173,7 +173,7 @@ public class CashGamePerformanceRepositoryDatastore implements CashGamePerforman
         perfData.setProperty(UPDATE, performance.getLastUpdate());
 
         datastore.put(perfData);
-        LOGGER.log(Level.INFO, "Performance stored : " + perfData);
+        LOGGER.log(Level.FINE, "Performance stored : " + perfData);
     }
 
     private CashGamePerformance buildPerfFromEntity(Entity p) throws EntityNotFoundException

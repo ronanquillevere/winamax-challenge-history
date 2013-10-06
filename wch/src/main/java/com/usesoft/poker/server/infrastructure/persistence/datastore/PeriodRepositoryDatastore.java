@@ -53,6 +53,7 @@ public class PeriodRepositoryDatastore implements PeriodRepository {
         int count = pq.countEntities(FetchOptions.Builder.withDefaults());
 
         if (count == 1){
+            LOGGER.log(Level.FINE, "Found already in database period;" + period);
             return;
         }
 
@@ -66,26 +67,26 @@ public class PeriodRepositoryDatastore implements PeriodRepository {
         periodData.setProperty(END_DATE, period.getEnd());
 
         datastore.put(periodData);
-        LOGGER.log(Level.INFO, "Crawled period;" + period);
+        LOGGER.log(Level.FINE, "Stored in database period;" + period);
     }
 
 
     @Override
     public Period find(Date startDate, Date endDate) {
         Period period = buildPeriodFromEntity(findEntity(startDate, endDate));
-        LOGGER.log(Level.INFO, "Found period;" + period);
+        LOGGER.log(Level.FINE, "Found period;" + period);
         return period;
     }
 
     public Entity findEntity(Date startDate, Date endDate){
         PreparedQuery pq = getPeriod(startDate, endDate);
-        LOGGER.log(Level.INFO, "Prepared query for period start;" + startDate + ";end;" + endDate);
+        LOGGER.log(Level.FINE, "Prepared query for period start;" + startDate + ";end;" + endDate);
 
         int count = pq.countEntities(FetchOptions.Builder.withDefaults());
-        LOGGER.log(Level.INFO, "Count;" + count);
+        LOGGER.log(Level.FINE, "Found period count;" + count);
 
         if (count > 1) {
-            throw new RuntimeException("SHould not have more than one period with the same dates");
+            throw new RuntimeException("Should not have more than one period with the same dates");
         }
 
         if (count == 0)

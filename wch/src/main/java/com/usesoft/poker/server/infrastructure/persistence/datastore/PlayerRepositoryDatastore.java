@@ -72,6 +72,7 @@ public class PlayerRepositoryDatastore implements PlayerRepository {
         int count = pq.countEntities(FetchOptions.Builder.withDefaults());
 
         if (count == 1){
+            LOGGER.log(Level.FINE, "Already in database player;" + player);
             return;
         }
 
@@ -85,7 +86,7 @@ public class PlayerRepositoryDatastore implements PlayerRepository {
 
         Key key = datastore.put(periodData);
 
-        LOGGER.log(Level.INFO, "Stored player;" + player + ";key;" + key);
+        LOGGER.log(Level.FINE, "Stored player;" + player + ";key;" + key);
     }
 
     private PlayerRepositoryDatastore() {

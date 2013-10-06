@@ -45,6 +45,7 @@ public class CashGameParser
 
     public void parse(Document document, Stake stake) throws ParseException
     {
+        LOGGER.log(Level.INFO, "Requested Cash Game Performances parsing for stake;" + stake);
         Validate.notNull(document, "Document is required");
         Validate.notNull(stake, "Stake is required");
 
@@ -54,7 +55,7 @@ public class CashGameParser
 
         parsePerformances(document, stake, period, numberOfRows);
 
-        LOGGER.log(Level.INFO, "Parsing Cash Game Performance : End");
+        LOGGER.log(Level.INFO, "Parsed Cash Game Performances for stake;" + stake);
     }
 
     private Period parsePeriod(Document document, Stake stake) throws ParseException
@@ -69,19 +70,20 @@ public class CashGameParser
             LOGGER.log(Level.INFO, "Period already in db;" + period);
 
             clearPerformances(period, stake);
-            LOGGER.log(Level.INFO, "Related performaces cleared stake;" + stake);
+            LOGGER.log(Level.INFO, "Related performaces cleared");
 
             return period;
         }
 
         periodRepo.store(period);
+
         return period;
     }
 
     private void clearPerformances(Period period, Stake stake)
     {
         Collection<CashGamePerformance> perfs = perfRepository.find(period, stake);
-        LOGGER.log(Level.INFO, "Found old Performances number;" + perfs.size());
+        LOGGER.log(Level.INFO, "Found old performances to clear for period;" + period + ";stake;" + stake + ";number;" + perfs.size());
 
         for (CashGamePerformance p : perfs)
         {
@@ -95,6 +97,7 @@ public class CashGameParser
         CashGamePerformance perf = new CashGamePerformance(player, period, stake, now);
         perf.setHands(nbHands);
         perf.setBuyIns(buyIns);
+        LOGGER.log(Level.INFO, "Found performance;" + perf);
         perfRepository.store(perf);
         return perf;
     }
@@ -126,6 +129,7 @@ public class CashGameParser
     {
         String playerName = CrawlerUtil.extractPlayerName(document, i);
         Player player = new Player(new PlayerName(playerName));
+        LOGGER.log(Level.INFO, "Found performance for player;" + player);
         playerRepo.store(player);
         return player;
     }
