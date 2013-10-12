@@ -42,7 +42,10 @@ public class PlayerRepositoryDatastore implements PlayerRepository {
 
     @Override
     public Player find(String playerName) {
-        return buildPlayerFromEntity(findEntity(playerName));
+        Entity findEntity = findEntity(playerName);
+        if (findEntity == null)
+            return null;
+        return buildPlayerFromEntity(findEntity);
     }
 
     public Entity findEntity(String playerName){
@@ -80,13 +83,13 @@ public class PlayerRepositoryDatastore implements PlayerRepository {
             throw new RuntimeException("Should not have more than one player with the same dates");
         }
 
-        Entity periodData = new Entity(getPlayerTypeName());
+        Entity playerData = new Entity(getPlayerTypeName());
 
-        periodData.setProperty(PLAYER_NAME, player.getPlayerName().getName());
+        playerData.setProperty(PLAYER_NAME, player.getPlayerName().getName());
 
-        Key key = datastore.put(periodData);
+        Key key = datastore.put(playerData);
 
-        LOGGER.log(Level.FINE, "Stored player;" + player + ";key;" + key);
+        LOGGER.log(Level.INFO, "Stored player;" + player + ";key;" + key);
     }
 
     private PlayerRepositoryDatastore() {

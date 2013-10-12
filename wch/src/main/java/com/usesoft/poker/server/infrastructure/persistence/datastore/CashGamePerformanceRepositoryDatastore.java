@@ -3,8 +3,11 @@ package com.usesoft.poker.server.infrastructure.persistence.datastore;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.commons.lang3.Validate;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -25,6 +28,24 @@ import com.usesoft.poker.server.domain.model.time.Period;
 
 public class CashGamePerformanceRepositoryDatastore implements CashGamePerformanceRepository
 {
+
+    private final class TaskFindPlayer extends TimerTask
+    {
+        private Entity playerEnt;
+        private final CashGamePerformance performance;
+
+        private TaskFindPlayer(Entity playerEnt, CashGamePerformance performance)
+        {
+            this.playerEnt = playerEnt;
+            this.performance = performance;
+        }
+
+        @Override
+        public void run()
+        {
+            playerEnt = playerRepo.findEntity(performance.getPlayer().getPlayerName().getName());
+        }
+    }
 
     public static final CashGamePerformanceRepositoryDatastore INSTANCE = new CashGamePerformanceRepositoryDatastore();
 
@@ -154,14 +175,39 @@ public class CashGamePerformanceRepositoryDatastore implements CashGamePerforman
     }
 
     @Override
-    public void store(CashGamePerformance performance)
+    public void store(final CashGamePerformance performance)
     {
+        Validate.notNull(performance, "Performance cannot be null");
 
         Entity periodEnt = periodStore.findEntity(performance.getPeriod().getStart(), performance.getPeriod().getEnd());
-        LOGGER.log(Level.FINE, "Period found in database;" + periodEnt);
+        LOGGER.log(Level.INFO, "Period found in database;" + periodEnt);
 
         Entity playerEnt = playerRepo.findEntity(performance.getPlayer().getPlayerName().getName());
-        LOGGER.log(Level.FINE, "Player found in database;" + playerEnt);
+        LOGGER.log(Level.INFO, "Player found in database;" + playerEnt);
+
+        if (playerEnt == null)
+        {
+            findPlayerAgain(performance, playerEnt);
+        }
+
+        store(performance, periodEnt, playerEnt);
+    }
+
+    private void findPlayerAgain(final CashGamePerformance performance, Entity playerEnt)
+    {
+        LOGGER.log(Level.INFO, "Loop to find in database player;" + performance.getPlayer().getPlayerName().getName());
+
+        for (int i = 0; i < 100 && playerEnt == null; i++)
+        {
+            playerEnt = playerRepo.findEntity(performance.getPlayer().getPlayerName().getName());
+        }
+
+    }
+
+    private void store(CashGamePerformance performance, Entity periodEnt, Entity playerEnt)
+    {
+        Validate.notNull(periodEnt, "Period database entity cannot be null to save performance");
+        Validate.notNull(playerEnt, "Player database entity cannot be null to save performance");
 
         Entity perfData = new Entity(getCashPerfTypeName());
 

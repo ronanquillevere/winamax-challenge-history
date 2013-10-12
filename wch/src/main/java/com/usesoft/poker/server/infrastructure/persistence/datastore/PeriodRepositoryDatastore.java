@@ -67,13 +67,17 @@ public class PeriodRepositoryDatastore implements PeriodRepository {
         periodData.setProperty(END_DATE, period.getEnd());
 
         datastore.put(periodData);
-        LOGGER.log(Level.FINE, "Stored in database period;" + period);
+        LOGGER.log(Level.INFO, "Stored in database period;" + period);
     }
 
 
     @Override
     public Period find(Date startDate, Date endDate) {
-        Period period = buildPeriodFromEntity(findEntity(startDate, endDate));
+        Entity findEntity = findEntity(startDate, endDate);
+        if (findEntity == null)
+            return null;
+
+        Period period = buildPeriodFromEntity(findEntity);
         LOGGER.log(Level.FINE, "Found period;" + period);
         return period;
     }
@@ -96,12 +100,11 @@ public class PeriodRepositoryDatastore implements PeriodRepository {
         return next;
     }
 
-    public Period find(Key key) throws EntityNotFoundException{
-        return buildPeriodFromEntity(datastore.get(key));
-    }
-
     public Period findPeriod(Key key) throws EntityNotFoundException {
-        return buildPeriodFromEntity(datastore.get(key));
+        Entity entitity = datastore.get(key);
+        if (entitity == null)
+            return null;
+        return buildPeriodFromEntity(entitity);
     }
 
 

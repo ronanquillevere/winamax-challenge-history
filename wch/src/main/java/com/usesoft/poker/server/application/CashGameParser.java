@@ -45,7 +45,6 @@ public class CashGameParser
 
     public void parse(Document document, Stake stake) throws ParseException
     {
-        LOGGER.log(Level.INFO, "Requested Cash Game Performances parsing for stake;" + stake);
         Validate.notNull(document, "Document is required");
         Validate.notNull(stake, "Stake is required");
 
@@ -73,6 +72,9 @@ public class CashGameParser
             LOGGER.log(Level.INFO, "Related performaces cleared");
 
             return period;
+        } else
+        {
+            LOGGER.log(Level.INFO, "Period not found in db;" + period);
         }
 
         periodRepo.store(period);

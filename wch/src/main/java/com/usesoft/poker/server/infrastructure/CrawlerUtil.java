@@ -74,7 +74,7 @@ public class CrawlerUtil
         matcher.find();
         matcher.find();
         String end = matcher.group(1);
-        LOGGER.log(Level.INFO, "Matched end date;" + end);
+        LOGGER.log(Level.FINE, "Matched end date;" + end);
 
         Date date = SDF.parse(end);
         calendar.setTime(date);
@@ -89,7 +89,7 @@ public class CrawlerUtil
         matcher.find();
         String start = matcher.group(1);
 
-        LOGGER.log(Level.INFO, "Matched start date;" + start);
+        LOGGER.log(Level.FINE, "Matched start date;" + start);
         return SDF.parse(start);
     }
 
@@ -129,7 +129,7 @@ public class CrawlerUtil
         date = date.replace("nov.", "Novembre");
         date = date.replace("dec.", "Décembre");
 
-        LOGGER.log(Level.INFO, "Month abreviation replaced;" + date);
+        LOGGER.log(Level.FINE, "Month abreviation replaced;" + date);
         return date;
     }
 
