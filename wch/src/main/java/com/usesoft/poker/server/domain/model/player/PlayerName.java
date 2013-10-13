@@ -12,6 +12,7 @@ public class PlayerName extends BaseValueObject<PlayerName> {
         this.name = name;
     }
 
+    @Override
     public boolean sameValueAs(PlayerName other) {
           return other != null && this.getName().equals(other.getName());
     }
@@ -26,5 +27,4 @@ public class PlayerName extends BaseValueObject<PlayerName> {
     }
 
     private final String name;
-    private static final long serialVersionUID = 1L;
 }

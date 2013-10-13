@@ -21,7 +21,7 @@ public class PeriodRepositoryInMemory implements PeriodRepository {
     }
 
     @Override
-    public void store(Period period) {
+    public void store(Period period, boolean force) {
         Period exist = find(period.getStart(), period.getEnd());
         if (exist == null)
             periods.add(period);
@@ -32,6 +32,17 @@ public class PeriodRepositoryInMemory implements PeriodRepository {
     public Period find(Date startDate, Date endDate) {
         for (Period p : periods) {
             if (p.getStart().equals(startDate) && p.getEnd().equals(endDate))
+                return p;
+        }
+        return null;
+    }
+
+    @Override
+    public Period find(String id)
+    {
+        for (Period p : periods)
+        {
+            if (p.getId().equals(id))
                 return p;
         }
         return null;

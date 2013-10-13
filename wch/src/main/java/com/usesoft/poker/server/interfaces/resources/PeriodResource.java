@@ -5,6 +5,7 @@ import java.util.Collection;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -22,4 +23,10 @@ public class PeriodResource {
         return PeriodRepositoryDatastore.INSTANCE.findAll();
     }
 
+    @GET
+    @Path("{id}")
+    public Period getPeriod(@PathParam("id") String id)
+    {
+        return PeriodRepositoryDatastore.INSTANCE.find(id);
+    }
 }

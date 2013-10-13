@@ -77,7 +77,7 @@ public class CashGameParser
             LOGGER.log(Level.INFO, "Period not found in db;" + period);
         }
 
-        periodRepo.store(period);
+        periodRepo.store(period, false);
 
         return period;
     }
@@ -124,7 +124,8 @@ public class CashGameParser
         String periodAsString = CrawlerUtil.extractDatePeriod(document);
         Date start = CrawlerUtil.parseStartDate(periodAsString);
         Date end = CrawlerUtil.parseEndDate(periodAsString);
-        return new Period(start, end);
+
+        return new Period(start, end, Period.generateId(start, end));
     }
 
     private Player parsePlayer(Document document, int i)

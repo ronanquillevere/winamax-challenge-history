@@ -10,6 +10,11 @@
 		<servlet-name>Crawler</servlet-name>
 		<servlet-class>com.usesoft.poker.server.interfaces.CashGameCrawler</servlet-class>
 	</servlet>
+	
+	<servlet>
+		<servlet-name>UpdatePeriodIds</servlet-name>
+		<servlet-class>com.usesoft.poker.server.interfaces.UpdatePeriodsAddIds</servlet-class>
+	</servlet>
 
 	<servlet>
 		<!-- <servlet-name>Jersey Web Application</servlet-name> <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class> 
@@ -28,6 +33,11 @@
 	<servlet-mapping>
 		<servlet-name>Crawler</servlet-name>
 		<url-pattern>/wch/crawler/cashgame/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>UpdatePeriodIds</servlet-name>
+		<url-pattern>/wch/updatedb/periods/addid</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>

@@ -15,7 +15,9 @@ import com.usesoft.poker.server.domain.model.time.Period;
 public class TestCashGamePerformace {
     @Test
     public void testInvariant() {
-        Period period = new Period(new Date(), new Date());
+        Date start = new Date();
+        Date end = new Date();
+        Period period = new Period(start, end, Period.generateId(start, end));
         Player player = new Player(new PlayerName("Ronan"));
         Date d = new Date();
         try {
@@ -54,22 +56,20 @@ public class TestCashGamePerformace {
         } catch (Exception e) {
         }
     }
-    
+
     @Test
     public void testEquals() {
-        
+
         Date startDate = new Date();
         long time = startDate.getTime();
         Date startDate2 = new Date(time +10 );
         Date endDate = new Date(time + 20);
         Date endDate2 = new Date(time + 30);
-        
-        
-        
-        Period period = new Period(startDate, endDate);
-        Period period2 = new Period(startDate, endDate);
-        Period period3 = new Period(startDate2, endDate2);
-        
+
+        Period period = new Period(startDate, endDate, Period.generateId(startDate, endDate));
+        Period period2 = new Period(startDate, endDate, Period.generateId(startDate, endDate));
+        Period period3 = new Period(startDate2, endDate2, Period.generateId(startDate2, endDate2));
+
         Player player1 = new Player(new PlayerName("player"));
         Player player2 = new Player(new PlayerName("player"));
         Player player3 = new Player(new PlayerName("player3"));
@@ -80,24 +80,24 @@ public class TestCashGamePerformace {
 
         EntityUtil.checkValues(p, p2, p3);
     }
-    
-    
+
+
     @Test
     public void test() {
         Date start = new Date();
         Date end = new Date(start.getTime() + 10);
-        Period period = new Period(start, end);
+        Period period = new Period(start, end, Period.generateId(start, end));
         Player player1 = new Player(new PlayerName("player"));
 
         CashGamePerformance p = new CashGamePerformance(player1, period, Stake.Micro, new Date());
-        
+
         assertEquals(start, p.getPeriod().getStart());
         assertEquals(end, p.getPeriod().getEnd());
         assertEquals(Stake.Micro, p.getStake());
-        
+
         assertEquals(0, p.getHands());
         assertEquals(0d, p.getBuyIns(), 0);
-        
+
         p.setHands(25);
         p.setBuyIns(12.32d);
 
@@ -106,7 +106,6 @@ public class TestCashGamePerformace {
 
         p.setBuyIns(-52.32d);
         assertEquals(-52.32d, p.getBuyIns(), 0);
-        
     }
 
 }

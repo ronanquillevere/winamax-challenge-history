@@ -35,7 +35,7 @@ public class TestCashGamePerformanceRepository {
         Date d3 = new Date(d1.getTime() + 30);
         Date d4 = new Date(d1.getTime() + 40);
 
-        Period period1 = new Period(d1, d2);
+        Period period1 = new Period(d1, d2, Period.generateId(d1, d2));
         String ronanFN = "ronan";
         Player ronan = new Player(new PlayerName(ronanFN));
 
@@ -44,7 +44,7 @@ public class TestCashGamePerformanceRepository {
         performance.setHands(30000);
         performance.setBuyIns(5.20);
 
-        Period period2 = new Period(d3, d4);
+        Period period2 = new Period(d3, d4, Period.generateId(d3, d4));
         String kimFN = "kim22_12";
         Player kim = new Player(new PlayerName(kimFN));
 
@@ -85,7 +85,7 @@ public class TestCashGamePerformanceRepository {
         assertEquals(1, repo.find(ronan).size());
         assertEquals(35000, repo.find(ronan).iterator().next().getHands());
         assertEquals(10.00, repo.find(ronan).iterator().next().getBuyIns(), 0);
-        
+
         assertEquals(0, repo.find(ronan, Stake.Small).size());
         assertTrue(repo.find(ronan, period2, Stake.Micro) == null);
     }
