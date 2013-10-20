@@ -35,7 +35,7 @@ public class UpdatePeriodsAddIds extends HttpServlet
         LOGGER.info("Update period ids : start");
     }
 
-    private static final Logger LOGGER = Logger.getLogger(CashGameCrawler.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(UpdatePeriodsAddIds.class.getName());
     private static final long serialVersionUID = 1L;
 
 }

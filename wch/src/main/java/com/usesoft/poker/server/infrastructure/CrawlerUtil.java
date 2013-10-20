@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -131,6 +132,14 @@ public class CrawlerUtil
 
         LOGGER.log(Level.FINE, "Month abreviation replaced;" + date);
         return date;
+    }
+
+    public static Date getParisTime()
+    {
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTimeZone(TimeZone.getTimeZone("Europe/Paris"));
+        Date now = calendar.getTime();
+        return now;
     }
 
     private CrawlerUtil()

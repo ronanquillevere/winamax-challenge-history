@@ -72,11 +72,9 @@ public class CashGameParser
             LOGGER.log(Level.INFO, "Related performaces cleared");
 
             return period;
-        } else
-        {
-            LOGGER.log(Level.INFO, "Period not found in db;" + period);
         }
 
+        LOGGER.log(Level.INFO, "Period not found in db;" + period);
         periodRepo.store(period, false);
 
         return period;
@@ -106,7 +104,7 @@ public class CashGameParser
 
     private void parsePerformances(Document document, Stake stake, Period period, int nbOfRows)
     {
-        Date now = new Date();
+        Date now = CrawlerUtil.getParisTime();
 
         for (int i = 1; i <= nbOfRows; i++)
         {
@@ -118,6 +116,8 @@ public class CashGameParser
             parsePerformance(stake, period, now, nbHands, buyIns, player);
         }
     }
+
+
 
     private Period extractPeriod(Document document) throws ParseException
     {

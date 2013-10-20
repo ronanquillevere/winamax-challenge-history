@@ -4,13 +4,12 @@
     "http://java.sun.com/dtd/web-app_2_3.dtd">
 
 <web-app>
-
 	<!-- Servlets -->
 	<servlet>
 		<servlet-name>Crawler</servlet-name>
 		<servlet-class>com.usesoft.poker.server.interfaces.CashGameCrawler</servlet-class>
 	</servlet>
-	
+
 	<servlet>
 		<servlet-name>UpdatePeriodIds</servlet-name>
 		<servlet-class>com.usesoft.poker.server.interfaces.UpdatePeriodsAddIds</servlet-class>
@@ -29,23 +28,21 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-
+	
 	<servlet-mapping>
 		<servlet-name>Crawler</servlet-name>
 		<url-pattern>/wch/crawler/cashgame/*</url-pattern>
 	</servlet-mapping>
-	
+		
 	<servlet-mapping>
 		<servlet-name>UpdatePeriodIds</servlet-name>
-		<url-pattern>/wch/updatedb/periods/addid</url-pattern>
+		<url-pattern>/update/periods</url-pattern>
 	</servlet-mapping>
-
+	
 	<servlet-mapping>
 		<servlet-name>Jersey Web Application</servlet-name>
 		<url-pattern>/api/*</url-pattern>
 	</servlet-mapping>
-
-
 
 	<!-- Default page to serve -->
 	<welcome-file-list>

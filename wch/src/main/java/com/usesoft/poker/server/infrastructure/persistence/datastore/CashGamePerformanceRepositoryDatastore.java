@@ -178,8 +178,12 @@ public class CashGamePerformanceRepositoryDatastore implements CashGamePerforman
     public void store(final CashGamePerformance performance)
     {
         Validate.notNull(performance, "Performance cannot be null");
+        Date startDate = performance.getPeriod().getStart();
+        Date endDate = performance.getPeriod().getEnd();
+        Validate.notNull(startDate);
+        Validate.notNull(endDate);
 
-        Entity periodEnt = periodStore.findEntity(performance.getPeriod().getStart(), performance.getPeriod().getEnd());
+        Entity periodEnt = periodStore.getDatastoreEntityFromFilter(periodStore.createFilterByDates(startDate, endDate));
         LOGGER.log(Level.INFO, "Period found in database;" + periodEnt);
 
         Entity playerEnt = playerRepo.findEntity(performance.getPlayer().getPlayerName().getName());
@@ -225,7 +229,7 @@ public class CashGamePerformanceRepositoryDatastore implements CashGamePerforman
     private CashGamePerformance buildPerfFromEntity(Entity p) throws EntityNotFoundException
     {
         Player player = playerRepo.findPlayer((Key) p.getProperty(PLAYER_KEY));
-        Period period = periodStore.findPeriod((Key) p.getProperty(PERIOD_KEY));
+        Period period = periodStore.find((Key) p.getProperty(PERIOD_KEY));
         Stake stake = Stake.valueOf((String) p.getProperty(STAKE));
         Date lastUpdate = (Date) p.getProperty(UPDATE);
         return new CashGamePerformance(player, period, stake, lastUpdate);
@@ -248,7 +252,11 @@ public class CashGamePerformanceRepositoryDatastore implements CashGamePerforman
 
     private PreparedQuery getPerf(Period period, Stake stake)
     {
-        Entity periodEnt = periodStore.findEntity(period.getStart(), period.getEnd());
+        Date startDate = period.getStart();
+        Date endDate = period.getEnd();
+        Validate.notNull(startDate);
+        Validate.notNull(endDate);
+        Entity periodEnt = periodStore.getDatastoreEntityFromFilter(periodStore.createFilterByDates(startDate, endDate));
         Filter periodFilter = new FilterPredicate(PERIOD_KEY, FilterOperator.EQUAL, periodEnt.getKey());
         Filter stakeFilter = new FilterPredicate(STAKE, FilterOperator.EQUAL, stake.toString());
         Filter compositeFilter = CompositeFilterOperator.and(periodFilter, stakeFilter);
@@ -268,7 +276,11 @@ public class CashGamePerformanceRepositoryDatastore implements CashGamePerforman
     {
         Entity playerEnt = playerRepo.findEntity(player.getPlayerName().getName());
         Filter playerFilter = new FilterPredicate(PLAYER_KEY, FilterOperator.EQUAL, playerEnt.getKey());
-        Entity periodEnt = periodStore.findEntity(period.getStart(), period.getEnd());
+        Date startDate = period.getStart();
+        Date endDate = period.getEnd();
+        Validate.notNull(startDate);
+        Validate.notNull(endDate);
+        Entity periodEnt = periodStore.getDatastoreEntityFromFilter(periodStore.createFilterByDates(startDate, endDate));
         Filter periodFilter = new FilterPredicate(PERIOD_KEY, FilterOperator.EQUAL, periodEnt.getKey());
         Filter stakeFilter = new FilterPredicate(STAKE, FilterOperator.EQUAL, stake.toString());
         Filter compositeFilter = CompositeFilterOperator.and(periodFilter, stakeFilter);
