@@ -17,7 +17,6 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.usesoft.poker.server.domain.model.player.Player;
-import com.usesoft.poker.server.domain.model.player.PlayerName;
 import com.usesoft.poker.server.domain.model.player.PlayerRepository;
 
 public class PlayerRepositoryDatastore implements PlayerRepository {
@@ -70,7 +69,7 @@ public class PlayerRepositoryDatastore implements PlayerRepository {
 
     @Override
     public void store(Player player) {
-        PreparedQuery pq = getPlayer(player.getPlayerName().getName());
+        PreparedQuery pq = getPlayer(player.getPlayerName());
 
         int count = pq.countEntities(FetchOptions.Builder.withDefaults());
 
@@ -85,7 +84,7 @@ public class PlayerRepositoryDatastore implements PlayerRepository {
 
         Entity playerData = new Entity(getPlayerTypeName());
 
-        playerData.setProperty(PLAYER_NAME, player.getPlayerName().getName());
+        playerData.setProperty(PLAYER_NAME, player.getPlayerName());
 
         Key key = datastore.put(playerData);
 
@@ -97,7 +96,7 @@ public class PlayerRepositoryDatastore implements PlayerRepository {
     }
 
     private Player buildPlayerFromEntity(Entity p) {
-        return new Player(new PlayerName((String) p.getProperty(PLAYER_NAME)));
+        return new Player((String) p.getProperty(PLAYER_NAME));
     }
 
     private static String getPlayerTypeName() {

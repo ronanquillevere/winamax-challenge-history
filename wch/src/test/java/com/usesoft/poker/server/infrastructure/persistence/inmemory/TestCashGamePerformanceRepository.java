@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,20 +13,22 @@ import com.usesoft.poker.server.domain.model.cashgame.CashGamePerformance;
 import com.usesoft.poker.server.domain.model.cashgame.CashGamePerformanceRepository;
 import com.usesoft.poker.server.domain.model.cashgame.Stake;
 import com.usesoft.poker.server.domain.model.player.Player;
-import com.usesoft.poker.server.domain.model.player.PlayerName;
 import com.usesoft.poker.server.domain.model.time.Period;
 
-public class TestCashGamePerformanceRepository {
+public class TestCashGamePerformanceRepository
+{
 
     private CashGamePerformanceRepository repo = CashGamePerformanceRepositoryInMemory.INSTANCE;
 
     @Before
-    public void beforeTest() {
+    public void beforeTest()
+    {
         ((CashGamePerformanceRepositoryInMemory) repo).clear();
     }
 
     @Test
-    public void test() {
+    public void test()
+    {
 
         assertEquals(0, repo.findAll().size());
 
@@ -37,19 +40,17 @@ public class TestCashGamePerformanceRepository {
 
         Period period1 = new Period(d1, d2, Period.generateId(d1, d2));
         String ronanFN = "ronan";
-        Player ronan = new Player(new PlayerName(ronanFN));
+        Player ronan = new Player(ronanFN);
 
-        CashGamePerformance performance = new CashGamePerformance(ronan,
-                period1, Stake.Micro, new Date());
+        CashGamePerformance performance = new CashGamePerformance(ronan, period1, Stake.Micro, new Date(), UUID.randomUUID());
         performance.setHands(30000);
         performance.setBuyIns(5.20);
 
         Period period2 = new Period(d3, d4, Period.generateId(d3, d4));
         String kimFN = "kim22_12";
-        Player kim = new Player(new PlayerName(kimFN));
+        Player kim = new Player(kimFN);
 
-        CashGamePerformance performance2 = new CashGamePerformance(kim,
-                period2, Stake.Small, new Date());
+        CashGamePerformance performance2 = new CashGamePerformance(kim, period2, Stake.Small, new Date(), UUID.randomUUID());
         performance2.setHands(10000);
         performance2.setBuyIns(1.50);
 
@@ -61,15 +62,11 @@ public class TestCashGamePerformanceRepository {
         assertEquals(5.20, repo.find(ronan).iterator().next().getBuyIns(), 0);
         assertEquals(performance2, repo.find(kim).iterator().next());
 
-        assertEquals(performance, repo.find(period1, Stake.Micro).iterator()
-                .next());
-        assertEquals(performance2, repo.find(period2, Stake.Small).iterator()
-                .next());
+        assertEquals(performance, repo.find(period1, Stake.Micro).iterator().next());
+        assertEquals(performance2, repo.find(period2, Stake.Small).iterator().next());
 
-        assertEquals(performance, repo.find(ronan, Stake.Micro).iterator()
-                .next());
-        assertEquals(performance2, repo.find(kim, Stake.Small).iterator()
-                .next());
+        assertEquals(performance, repo.find(ronan, Stake.Micro).iterator().next());
+        assertEquals(performance2, repo.find(kim, Stake.Small).iterator().next());
 
         assertEquals(performance, repo.find(ronan, period1, Stake.Micro));
         assertEquals(performance2, repo.find(kim, period2, Stake.Small));

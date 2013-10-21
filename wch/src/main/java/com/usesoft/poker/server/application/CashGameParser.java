@@ -3,6 +3,7 @@ package com.usesoft.poker.server.application;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,7 +14,6 @@ import com.usesoft.poker.server.domain.model.cashgame.CashGamePerformance;
 import com.usesoft.poker.server.domain.model.cashgame.CashGamePerformanceRepository;
 import com.usesoft.poker.server.domain.model.cashgame.Stake;
 import com.usesoft.poker.server.domain.model.player.Player;
-import com.usesoft.poker.server.domain.model.player.PlayerName;
 import com.usesoft.poker.server.domain.model.player.PlayerRepository;
 import com.usesoft.poker.server.domain.model.time.Period;
 import com.usesoft.poker.server.domain.model.time.PeriodRepository;
@@ -94,7 +94,7 @@ public class CashGameParser
 
     private CashGamePerformance parsePerformance(Stake stake, Period period, Date now, int nbHands, double buyIns, Player player)
     {
-        CashGamePerformance perf = new CashGamePerformance(player, period, stake, now);
+        CashGamePerformance perf = new CashGamePerformance(player, period, stake, now, UUID.randomUUID());
         perf.setHands(nbHands);
         perf.setBuyIns(buyIns);
         LOGGER.log(Level.INFO, "Found performance;" + perf);
@@ -117,8 +117,6 @@ public class CashGameParser
         }
     }
 
-
-
     private Period extractPeriod(Document document) throws ParseException
     {
         String periodAsString = CrawlerUtil.extractDatePeriod(document);
@@ -131,7 +129,7 @@ public class CashGameParser
     private Player parsePlayer(Document document, int i)
     {
         String playerName = CrawlerUtil.extractPlayerName(document, i);
-        Player player = new Player(new PlayerName(playerName));
+        Player player = new Player(playerName);
         LOGGER.log(Level.INFO, "Found performance for player;" + player);
         playerRepo.store(player);
         return player;

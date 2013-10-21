@@ -21,17 +21,17 @@ public class TestPlayer {
     @Test
     public void test() {
         String n = "toto";
-        Player p = new Player(new PlayerName(n));
-        Player p2 = new Player(new PlayerName(n));
-        Player p3 = new Player(new PlayerName("TOTO"));
+        Player p = new Player(n);
+        Player p2 = new Player(n);
+        Player p3 = new Player("TOTO");
 
         EntityUtil.checkValues(p, p2, p3);
     }
-    
+
     @Test
     public void testToString() {
         String n = "toto";
-        Player player1 = new Player(new PlayerName(n));
+        Player player1 = new Player(n);
         assertEquals(n, player1.toString());
     }
 }

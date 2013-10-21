@@ -4,12 +4,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.Date;
+import java.util.UUID;
 
 import org.junit.Test;
 
 import com.usesoft.poker.server.domain.model.common.EntityUtil;
 import com.usesoft.poker.server.domain.model.player.Player;
-import com.usesoft.poker.server.domain.model.player.PlayerName;
 import com.usesoft.poker.server.domain.model.time.Period;
 
 public class TestCashGamePerformace {
@@ -18,37 +18,46 @@ public class TestCashGamePerformace {
         Date start = new Date();
         Date end = new Date();
         Period period = new Period(start, end, Period.generateId(start, end));
-        Player player = new Player(new PlayerName("Ronan"));
+        Player player = new Player("Ronan");
         Date d = new Date();
         try {
             @SuppressWarnings("unused")
-            CashGamePerformance p = new CashGamePerformance(null, period, Stake.Micro, d);
+            CashGamePerformance p = new CashGamePerformance(null, period, Stake.Micro, d, UUID.randomUUID());
             fail("Player is mandatory");
         } catch (Exception e) {
         }
 
         try {
             @SuppressWarnings("unused")
-            CashGamePerformance p = new CashGamePerformance(player, null, Stake.Micro, d);
+            CashGamePerformance p = new CashGamePerformance(player, null, Stake.Micro, d, UUID.randomUUID());
             fail("Period is mandatory");
         } catch (Exception e) {
         }
 
         try {
             @SuppressWarnings("unused")
-            CashGamePerformance p = new CashGamePerformance(player, period, null, d);
+            CashGamePerformance p = new CashGamePerformance(player, period, null, d, UUID.randomUUID());
             fail("Stake is mandatory");
         } catch (Exception e) {
         }
 
         try {
             @SuppressWarnings("unused")
-            CashGamePerformance p = new CashGamePerformance(player, period, Stake.Micro, null);
+            CashGamePerformance p = new CashGamePerformance(player, period, Stake.Micro, null, UUID.randomUUID());
             fail("Last Update is mandatory");
         } catch (Exception e) {
         }
 
-        CashGamePerformance p = new CashGamePerformance(player, period, Stake.Micro, d);
+        try
+        {
+            @SuppressWarnings("unused")
+            CashGamePerformance p = new CashGamePerformance(player, period, Stake.Micro, d, null);
+            fail("Id is mandatory");
+        } catch (Exception e)
+        {
+        }
+
+        CashGamePerformance p = new CashGamePerformance(player, period, Stake.Micro, d, UUID.randomUUID());
 
         try {
             p.setHands(-2);
@@ -70,13 +79,17 @@ public class TestCashGamePerformace {
         Period period2 = new Period(startDate, endDate, Period.generateId(startDate, endDate));
         Period period3 = new Period(startDate2, endDate2, Period.generateId(startDate2, endDate2));
 
-        Player player1 = new Player(new PlayerName("player"));
-        Player player2 = new Player(new PlayerName("player"));
-        Player player3 = new Player(new PlayerName("player3"));
+        Player player1 = new Player("player");
+        Player player2 = new Player("player");
+        Player player3 = new Player("player3");
 
-        CashGamePerformance p = new CashGamePerformance(player1, period, Stake.Micro, new Date());
-        CashGamePerformance p2 = new CashGamePerformance(player2, period2, Stake.Micro, new Date());
-        CashGamePerformance p3 = new CashGamePerformance(player3, period3, Stake.Micro, new Date());
+        UUID uuid1 = UUID.randomUUID();
+        UUID uuid2 = UUID.fromString(uuid1.toString());
+        UUID uuid3 = UUID.randomUUID();
+
+        CashGamePerformance p = new CashGamePerformance(player1, period, Stake.Micro, new Date(), uuid1);
+        CashGamePerformance p2 = new CashGamePerformance(player2, period2, Stake.Micro, new Date(), uuid2);
+        CashGamePerformance p3 = new CashGamePerformance(player3, period3, Stake.Micro, new Date(), uuid3);
 
         EntityUtil.checkValues(p, p2, p3);
     }
@@ -87,9 +100,9 @@ public class TestCashGamePerformace {
         Date start = new Date();
         Date end = new Date(start.getTime() + 10);
         Period period = new Period(start, end, Period.generateId(start, end));
-        Player player1 = new Player(new PlayerName("player"));
+        Player player1 = new Player("player");
 
-        CashGamePerformance p = new CashGamePerformance(player1, period, Stake.Micro, new Date());
+        CashGamePerformance p = new CashGamePerformance(player1, period, Stake.Micro, new Date(), UUID.randomUUID());
 
         assertEquals(start, p.getPeriod().getStart());
         assertEquals(end, p.getPeriod().getEnd());

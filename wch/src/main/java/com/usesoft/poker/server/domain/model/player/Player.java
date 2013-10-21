@@ -6,24 +6,27 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.usesoft.poker.server.domain.common.BaseEntity;
 
 public class Player extends BaseEntity<Player>{
-	
-	public Player(@JsonProperty("playerName") PlayerName playerName) {
-	    Validate.notNull(playerName, "PlayerName is required");
-	    this.playerName = playerName;
-	}
 
-	public boolean sameIdentityAs(Player other) {
-        return other != null && getPlayerName().sameValueAs(other.getPlayerName());
+    public Player(@JsonProperty("playerName") String playerName)
+    {
+        Validate.notNull(playerName, "PlayerName is required");
+        this.playerName = playerName;
     }
-   
-	@Override
-	public String toString() {
-	    return getPlayerName().toString();
-	}
-	
-    public PlayerName getPlayerName() {
+
+    @Override
+    public boolean sameIdentityAs(Player other) {
+        return other != null && other.playerName.equals(this.playerName);
+    }
+
+    @Override
+    public String toString() {
+        return getPlayerName().toString();
+    }
+
+    public String getPlayerName()
+    {
         return playerName;
     }
 
-    private final PlayerName playerName;
+    private final String playerName;
 }

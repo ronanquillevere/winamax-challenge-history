@@ -1,6 +1,7 @@
 package com.usesoft.poker.server.domain.model.cashgame;
 
 import java.util.Date;
+import java.util.UUID;
 
 import org.apache.commons.lang3.Validate;
 
@@ -12,17 +13,20 @@ import com.usesoft.poker.server.infrastructure.pattern.Filter;
 import com.usesoft.poker.server.infrastructure.pattern.Filterable;
 
 public class CashGamePerformance extends BaseEntity<CashGamePerformance>
-        implements Filterable<CashGamePerformance> {
+implements Filterable<CashGamePerformance> {
 
     public CashGamePerformance(@JsonProperty("player") Player player, @JsonProperty("period") Period period, @JsonProperty("stake") Stake stake,
-            @JsonProperty("lastUpdate") Date lastUpdate) {
-        Validate.notNull(player, "Player is required.");
-        Validate.notNull(period, "Period is required.");
-        Validate.notNull(stake, "Stake is required.");
-        Validate.notNull(lastUpdate, "Last update is required.");
+            @JsonProperty("lastUpdate") Date lastUpdate, @JsonProperty("id") UUID id)
+    {
+        Validate.notNull(player);
+        Validate.notNull(period);
+        Validate.notNull(stake);
+        Validate.notNull(lastUpdate);
+        Validate.notNull(id);
         this.player = player;
         this.period = period;
         this.stake = stake;
+        this.id = id;
         this.setLastUpdate(lastUpdate);
     }
 
@@ -32,9 +36,10 @@ public class CashGamePerformance extends BaseEntity<CashGamePerformance>
     }
 
     @Override
-    public boolean sameIdentityAs(CashGamePerformance other) {
-        return other != null && getPlayer().sameIdentityAs(other.getPlayer())
-                && period.sameIdentityAs(other.period) && stake == other.stake;
+    public boolean sameIdentityAs(CashGamePerformance other)
+    {
+        return other != null && getPlayer().sameIdentityAs(other.getPlayer()) && period.sameIdentityAs(other.period) && stake == other.stake
+                && id.equals(other.id);
     }
 
     public Period getPeriod() {
@@ -57,6 +62,11 @@ public class CashGamePerformance extends BaseEntity<CashGamePerformance>
         return player;
     }
 
+    @Override
+    public boolean accept(Filter<CashGamePerformance> filter) {
+        return filter.filter(this);
+    }
+
     public void setHands(long hands) {
         Validate.isTrue(hands >= 0, "Number of hands must be positive.");
         this.hands = hands;
@@ -74,16 +84,17 @@ public class CashGamePerformance extends BaseEntity<CashGamePerformance>
         this.lastUpdate = lastUpdate;
     }
 
+    public UUID getId()
+    {
+        return id;
+    }
+
     private long hands = 0;
     private double buyIns = 0;
     private final Player player;
     private final Period period;
     private final Stake stake;
+    private final UUID id;
 
     private Date lastUpdate;
-
-    @Override
-    public boolean accept(Filter<CashGamePerformance> filter) {
-        return filter.filter(this);
-    }
 }
