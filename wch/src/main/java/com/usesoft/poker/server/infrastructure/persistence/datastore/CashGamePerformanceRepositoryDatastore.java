@@ -224,6 +224,7 @@ public class CashGamePerformanceRepositoryDatastore implements CashGamePerforman
         perfData.setProperty(PERIOD_KEY, periodEnt.getKey());
         perfData.setProperty(STAKE, performance.getStake().toString());
         perfData.setProperty(UPDATE, performance.getLastUpdate());
+        perfData.setProperty(ID, performance.getId());
 
         datastore.put(perfData);
         LOGGER.log(Level.FINE, "Performance stored : " + perfData);
