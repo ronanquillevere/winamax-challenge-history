@@ -32,17 +32,17 @@ public class TestPeriodRepository {
 
         Period period1 = new Period(d1, d2, Period.generateId(d1, d2));
 
-        repo.store(period1, false);
+        repo.store(period1);
 
         assertEquals(repo.find(d1b,d2b), period1);
         assertEquals(1,repo.findAll().size());
 
-        repo.store(period1, false);
+        repo.store(period1);
         assertEquals(1,repo.findAll().size());
 
         Date start = new Date();
         Date end = new Date();
-        repo.store(new Period(start, end, Period.generateId(start, end)), false);
+        repo.store(new Period(start, end, Period.generateId(start, end)));
         assertEquals(2,repo.findAll().size());
     }
 }

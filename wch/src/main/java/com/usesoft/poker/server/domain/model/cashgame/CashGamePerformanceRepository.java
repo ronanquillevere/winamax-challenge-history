@@ -18,6 +18,8 @@ public interface CashGamePerformanceRepository {
 
     Collection<CashGamePerformance> find(Player player);
 
+    CashGamePerformance find(String id);
+
     void store(CashGamePerformance performance);
 
     void remove(CashGamePerformance performance);

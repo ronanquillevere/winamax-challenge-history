@@ -19,7 +19,6 @@ public class UpdatePeriodsAddIds extends HttpServlet
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
-
         LOGGER.info("Update period ids : start");
 
         Collection<Period> periods = PeriodRepositoryDatastore.INSTANCE.findAll();
@@ -29,7 +28,7 @@ public class UpdatePeriodsAddIds extends HttpServlet
             Date start = period.getStart();
             Date end = period.getEnd();
             Period p = new Period(start, end, Period.generateId(start, end));
-            PeriodRepositoryDatastore.INSTANCE.store(p, true);
+            PeriodRepositoryDatastore.INSTANCE.store(p);
         }
 
         LOGGER.info("Update period ids : start");

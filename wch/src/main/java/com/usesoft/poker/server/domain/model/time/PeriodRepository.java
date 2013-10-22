@@ -7,7 +7,7 @@ public interface PeriodRepository {
 
     Collection<Period> findAll();
 
-    void store(Period period, boolean force);
+    void store(Period period);
 
     Period find(Date startDate, Date endDate);
 

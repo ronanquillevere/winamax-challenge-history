@@ -46,7 +46,8 @@ public class PlayerRepositoryDatastore implements PlayerRepository {
             return null;
         return buildPlayerFromEntity(findEntity);
     }
-
+    
+    
     public Entity findEntity(String playerName){
         PreparedQuery pq = getPlayer(playerName);
 

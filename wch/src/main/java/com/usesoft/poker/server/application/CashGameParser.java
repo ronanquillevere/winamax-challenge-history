@@ -75,7 +75,7 @@ public class CashGameParser
         }
 
         LOGGER.log(Level.INFO, "Period not found in db;" + period);
-        periodRepo.store(period, false);
+        periodRepo.store(period);
 
         return period;
     }

@@ -18,36 +18,20 @@ public class PeriodRepositoryDatastore extends GoogleDatastore<Period> implement
     private static final Logger LOGGER = Logger.getLogger(PeriodRepositoryDatastore.class.getName());
 
     @Override
-    public void store(Period period, boolean force)
+    public void store(Period period)
     {
-        Date startDate = period.getStart();
-        Date endDate = period.getEnd();
-        Validate.notNull(startDate);
-        Validate.notNull(endDate);
-        Entity foundEntity = getDatastoreEntityFromFilter(createFilterByDates(startDate, endDate));
-
-        if (foundEntity == null)
-        {
-            updateEntity(period, new Entity(getEntityKind()));
-            return;
-        }
-
-        if (force)
-        {
-            updateEntity(period, foundEntity);
-            return;
-        }
-
-        LOGGER.log(Level.FINE, "Found already in database period;" + period);
+        store(period, createFilterByDates(period.getStart(), period.getEnd()));
     }
 
     @Override
-    public Period find(String id)
+    protected void storeToEntity(Period period, Entity dbEntity)
     {
-        Validate.notNull(id);
+        dbEntity.setProperty(START_DATE, period.getStart());
+        dbEntity.setProperty(END_DATE, period.getEnd());
+        dbEntity.setProperty(ID, period.getId());
 
-        Filter f = createFilterById(id);
-        return buildEntity(f);
+        datastore.put(dbEntity);
+        LOGGER.log(Level.INFO, "Stored/updated in database period;" + period);
     }
 
     @Override
@@ -70,15 +54,5 @@ public class PeriodRepositoryDatastore extends GoogleDatastore<Period> implement
     protected String getEntityKind()
     {
         return Period.class.getName().substring(Period.class.getName().lastIndexOf(".") + 1);
-    }
-
-    private void updateEntity(Period period, Entity periodData)
-    {
-        periodData.setProperty(START_DATE, period.getStart());
-        periodData.setProperty(END_DATE, period.getEnd());
-        periodData.setProperty(ID, period.getId());
-    
-        datastore.put(periodData);
-        LOGGER.log(Level.INFO, "Stored/updated in database period;" + period);
     }
 }

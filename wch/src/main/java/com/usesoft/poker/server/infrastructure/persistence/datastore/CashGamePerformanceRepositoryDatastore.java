@@ -3,7 +3,6 @@ package com.usesoft.poker.server.infrastructure.persistence.datastore;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.TimerTask;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,27 +26,9 @@ import com.usesoft.poker.server.domain.model.cashgame.Stake;
 import com.usesoft.poker.server.domain.model.player.Player;
 import com.usesoft.poker.server.domain.model.time.Period;
 
+@Deprecated
 public class CashGamePerformanceRepositoryDatastore implements CashGamePerformanceRepository
 {
-
-    private final class TaskFindPlayer extends TimerTask
-    {
-        private Entity playerEnt;
-        private final CashGamePerformance performance;
-
-        private TaskFindPlayer(Entity playerEnt, CashGamePerformance performance)
-        {
-            this.playerEnt = playerEnt;
-            this.performance = performance;
-        }
-
-        @Override
-        public void run()
-        {
-            playerEnt = playerRepo.findEntity(performance.getPlayer().getPlayerName());
-        }
-    }
-
     public static final CashGamePerformanceRepositoryDatastore INSTANCE = new CashGamePerformanceRepositoryDatastore();
 
     private static final Logger LOGGER = Logger.getLogger(CashGamePerformanceRepositoryDatastore.class.getName());
@@ -224,7 +205,7 @@ public class CashGamePerformanceRepositoryDatastore implements CashGamePerforman
         perfData.setProperty(PERIOD_KEY, periodEnt.getKey());
         perfData.setProperty(STAKE, performance.getStake().toString());
         perfData.setProperty(UPDATE, performance.getLastUpdate());
-        perfData.setProperty(ID, performance.getId());
+        perfData.setProperty(ID, performance.getId().toString());
 
         datastore.put(perfData);
         LOGGER.log(Level.FINE, "Performance stored : " + perfData);
@@ -300,6 +281,13 @@ public class CashGamePerformanceRepositoryDatastore implements CashGamePerforman
         Filter stakeFilter = new FilterPredicate(STAKE, FilterOperator.EQUAL, stake.toString());
         Filter compositeFilter = CompositeFilterOperator.and(playerFilter, stakeFilter);
         return datastore.prepare(new Query(getCashPerfTypeName()).setFilter(compositeFilter));
+    }
+
+    @Override
+    public CashGamePerformance find(String id)
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
