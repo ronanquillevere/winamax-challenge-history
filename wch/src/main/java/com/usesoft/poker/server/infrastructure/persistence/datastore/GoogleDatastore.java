@@ -21,10 +21,10 @@ import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.usesoft.poker.server.domain.common.BaseEntity;
 import com.usesoft.poker.server.domain.model.cashgame.Stake;
-import com.usesoft.poker.server.domain.model.player.Player;
 
-public abstract class GoogleDatastore<T>
+public abstract class GoogleDatastore<T extends BaseEntity<T>>
 {
     public static final String END_DATE = "endDate";
     public static final String START_DATE = "startDate";
@@ -35,7 +35,6 @@ public abstract class GoogleDatastore<T>
     public static final String UPDATE = "lastUpdate";
     public static final String HANDS = "hands";
     public static final String BUY_INS = "buyIns";
-    public static final String PLAYER_NAME = "playerName";
 
     public static Filter createFilterByDates(Date start, Date end)
     {
@@ -59,12 +58,11 @@ public abstract class GoogleDatastore<T>
         return stakeFilter;
     }
 
-    public static Filter createFilterByPlayerName(Player player)
+    protected <M extends BaseEntity<M>> Filter createFilterByModel(String ForeignKey, M model)
     {
-        Filter playerFilter = new FilterPredicate(PLAYER_NAME, FilterOperator.EQUAL, player.getPlayerName());
-        return playerFilter;
+        Filter filter = new FilterPredicate(ForeignKey, FilterOperator.EQUAL, getModelDBKey(model));
+        return filter;
     }
-
 
     public Collection<T> findAll()
     {
@@ -83,7 +81,7 @@ public abstract class GoogleDatastore<T>
         return list;
     }
 
-    public T find(String id)
+    public T findById(String id)
     {
         Validate.notNull(id);
 
@@ -108,12 +106,20 @@ public abstract class GoogleDatastore<T>
         Entity entity = getDatastoreEntityFromFilter(filter);
 
         if (entity == null)
-            entity = new Entity(getEntityKind());
+            entity = new Entity(model.getType(), model.getId());
         else
             LOGGER.log(Level.FINE, "Found already in database model entity;" + model);
 
         storeToEntity(model, entity);
     }
+
+    protected <M extends BaseEntity<M>> Key getModelDBKey(M model)
+    {
+        Entity dbEntity = new Entity(model.getType(), model.getId());
+        Key key = dbEntity.getKey();
+        return key;
+    }
+
 
     protected T buildFromDatastoreEntity(Entity entity)
     {
@@ -128,6 +134,9 @@ public abstract class GoogleDatastore<T>
     protected List<T> buildFromDatastoreEntites(List<Entity> entities)
     {
         ArrayList<T> out = new ArrayList<T>();
+        if (entities == null)
+            return out;
+
         for (Entity entity : entities)
         {
             out.add(buildFromDatastoreEntity(entity));
@@ -138,7 +147,9 @@ public abstract class GoogleDatastore<T>
     protected Entity getDatastoreEntityFromFilter(Filter filter)
     {
         PreparedQuery pq = prepareQuery(filter, getEntityKind());
-        return getDatastoreEntity(pq);
+        Entity entity = getDatastoreEntity(pq);
+        LOGGER.log(Level.FINE, "Found in database model entity;" + entity);
+        return entity;
     }
 
     protected List<Entity> getDatastoreEntitiesFromFilter(Filter filter)
@@ -182,6 +193,13 @@ public abstract class GoogleDatastore<T>
             list.add(it.next());
         }
         return list;
+    }
+
+    public void remove(T modelEntity)
+    {
+        Entity fake = new Entity(modelEntity.getType(), modelEntity.getId());
+        datastore.delete(fake.getKey());
+        LOGGER.log(Level.FINE, "Deleted database entity;" + modelEntity);
     }
 
     private static final Logger LOGGER = Logger.getLogger(GoogleDatastore.class.getName());

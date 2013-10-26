@@ -157,4 +157,11 @@ CashGamePerformanceRepository {
 
         private Period period;
     }
+
+    @Override
+    public CashGamePerformance findById(String id)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

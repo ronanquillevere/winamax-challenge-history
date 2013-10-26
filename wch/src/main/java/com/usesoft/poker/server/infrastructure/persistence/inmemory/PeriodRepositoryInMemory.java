@@ -39,7 +39,7 @@ public class PeriodRepositoryInMemory implements PeriodRepository {
     }
 
     @Override
-    public Period find(String id)
+    public Period findById(String id)
     {
         for (Period p : periods)
         {
@@ -54,4 +54,11 @@ public class PeriodRepositoryInMemory implements PeriodRepository {
     }
 
     private final List<Period> periods = new ArrayList<Period>();
+
+    @Override
+    public void remove(Period entity)
+    {
+        // TODO Auto-generated method stub
+
+    }
 }

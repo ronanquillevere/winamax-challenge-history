@@ -13,7 +13,7 @@ public class Period extends BaseEntity<Period>{
     private static final SimpleDateFormat logDateFormat = new SimpleDateFormat("yyyy.MM.dd");
     private static final SimpleDateFormat ID_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
 
-    public static String generateId(Date start, Date end)
+    private static String generateId(Date start, Date end)
     {
         Validate.notNull(start, "Start date is required");
         Validate.notNull(end, "End date is required");
@@ -22,14 +22,14 @@ public class Period extends BaseEntity<Period>{
         return startId + endId;
     }
 
-    public Period(@JsonProperty("start") Date start, @JsonProperty("end") Date end, @JsonProperty("id") String id)
+    public Period(@JsonProperty("start") Date start, @JsonProperty("end") Date end)
     {
-        Validate.notNull(start, "Start date is required");
-        Validate.notNull(end, "End date is required");
-        Validate.notNull(id, "Id is required");
+        super(generateId(start, end));
+
+        Validate.notNull(start);
+        Validate.notNull(end);
         this.start = start;
         this.end = end;
-        this.id = id;
     }
 
     @Override
@@ -52,12 +52,6 @@ public class Period extends BaseEntity<Period>{
         return new Date(end.getTime());
     }
 
-    public String getId()
-    {
-        return id;
-    }
-
-    private final String id;
     private final Date start;
     private final Date end;
 }

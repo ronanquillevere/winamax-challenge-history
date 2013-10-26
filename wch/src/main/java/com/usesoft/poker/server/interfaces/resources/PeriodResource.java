@@ -25,8 +25,8 @@ public class PeriodResource {
 
     @GET
     @Path("{id}")
-    public Period getPeriod(@PathParam("id") String id)
+    public Period getObject(@PathParam("id") String id)
     {
-        return PeriodRepositoryDatastore.INSTANCE.find(id);
+        return PeriodRepositoryDatastore.INSTANCE.findById(id);
     }
 }

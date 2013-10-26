@@ -18,6 +18,8 @@ implements Filterable<CashGamePerformance> {
     public CashGamePerformance(@JsonProperty("player") Player player, @JsonProperty("period") Period period, @JsonProperty("stake") Stake stake,
             @JsonProperty("lastUpdate") Date lastUpdate, @JsonProperty("id") UUID id)
     {
+        super(id.toString());
+
         Validate.notNull(player);
         Validate.notNull(period);
         Validate.notNull(stake);
@@ -26,7 +28,6 @@ implements Filterable<CashGamePerformance> {
         this.player = player;
         this.period = period;
         this.stake = stake;
-        this.id = id;
         this.setLastUpdate(lastUpdate);
     }
 
@@ -84,17 +85,11 @@ implements Filterable<CashGamePerformance> {
         this.lastUpdate = lastUpdate;
     }
 
-    public UUID getId()
-    {
-        return id;
-    }
-
     private long hands = 0;
     private double buyIns = 0;
     private final Player player;
     private final Period period;
     private final Stake stake;
-    private final UUID id;
 
     private Date lastUpdate;
 }

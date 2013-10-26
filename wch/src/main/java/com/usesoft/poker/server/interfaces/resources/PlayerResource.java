@@ -22,12 +22,12 @@ public class PlayerResource {
     {
         return PlayerRepositoryDatastore.INSTANCE.findAll();
     }
-    
+
     @GET
     @Path("{playerName}")
     public Player getObject(@PathParam("playerName") String playerName)
     {
-        Player p = PlayerRepositoryDatastore.INSTANCE.find(playerName);
+        Player p = PlayerRepositoryDatastore.INSTANCE.findById(playerName);
         return p;
     }
 

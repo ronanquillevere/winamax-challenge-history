@@ -27,7 +27,7 @@ public class UpdatePeriodsAddIds extends HttpServlet
         {
             Date start = period.getStart();
             Date end = period.getEnd();
-            Period p = new Period(start, end, Period.generateId(start, end));
+            Period p = new Period(start, end);
             PeriodRepositoryDatastore.INSTANCE.store(p);
         }
 

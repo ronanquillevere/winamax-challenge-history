@@ -1,32 +1,22 @@
 package com.usesoft.poker.server.domain.model.player;
 
-import org.apache.commons.lang3.Validate;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.usesoft.poker.server.domain.common.BaseEntity;
 
 public class Player extends BaseEntity<Player>{
 
-    public Player(@JsonProperty("playerName") String playerName)
+    public Player(@JsonProperty("playerName") String id)
     {
-        Validate.notNull(playerName, "PlayerName is required");
-        this.playerName = playerName;
+        super(id);
     }
 
     @Override
     public boolean sameIdentityAs(Player other) {
-        return other != null && other.playerName.equals(this.playerName);
+        return other != null && other.id.equals(this.id);
     }
 
     @Override
     public String toString() {
-        return getPlayerName().toString();
+        return getId().toString();
     }
-
-    public String getPlayerName()
-    {
-        return playerName;
-    }
-
-    private final String playerName;
 }

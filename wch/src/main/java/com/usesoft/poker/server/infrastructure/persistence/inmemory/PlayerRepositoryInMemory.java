@@ -20,20 +20,27 @@ public class PlayerRepositoryInMemory implements PlayerRepository {
     }
 
     @Override
-    public Player find(String playerName) {
+    public Player findById(String playerName) {
         return players.get(playerName);
     }
 
     @Override
     public void store(Player player) {
-        players.put(player.getPlayerName().toString(), player);
+        players.put(player.getId().toString(), player);
 
     }
-    
+
     public void clear(){
         players.clear();
     }
 
     private final Map<String, Player> players = new HashMap<String, Player>();
+
+    @Override
+    public void remove(Player entity)
+    {
+        // TODO Auto-generated method stub
+
+    }
 
 }

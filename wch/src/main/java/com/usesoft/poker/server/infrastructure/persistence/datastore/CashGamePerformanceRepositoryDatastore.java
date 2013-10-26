@@ -1,6 +1,5 @@
 package com.usesoft.poker.server.infrastructure.persistence.datastore;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
@@ -9,285 +8,153 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang3.Validate;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.usesoft.poker.server.domain.model.cashgame.CashGamePerformance;
 import com.usesoft.poker.server.domain.model.cashgame.CashGamePerformanceRepository;
 import com.usesoft.poker.server.domain.model.cashgame.Stake;
 import com.usesoft.poker.server.domain.model.player.Player;
 import com.usesoft.poker.server.domain.model.time.Period;
 
-@Deprecated
-public class CashGamePerformanceRepositoryDatastore implements CashGamePerformanceRepository
+public class CashGamePerformanceRepositoryDatastore extends GoogleDatastore<CashGamePerformance> implements CashGamePerformanceRepository
 {
     public static final CashGamePerformanceRepositoryDatastore INSTANCE = new CashGamePerformanceRepositoryDatastore();
 
     private static final Logger LOGGER = Logger.getLogger(CashGamePerformanceRepositoryDatastore.class.getName());
 
-    private static final String PLAYER_KEY = "playerKey";
+    private PeriodRepositoryDatastore periodRepository;
 
-    private static final String PERIOD_KEY = "periodKey";
+    private PlayerRepositoryDatastore playerRepository;
 
-    private static final String STAKE = "stake";
-
-    private static final String UPDATE = "lastUpdate";
-
-    private static final String HANDS = "hands";
-
-    private static final String BUY_INS = "buyIns";
-
-    private static final String ID = "id";
-
-    private DatastoreService datastore;
-
-    private PeriodRepositoryDatastore periodStore;
-
-    private PlayerRepositoryDatastore playerRepo;
-
-    private static String getCashPerfTypeName()
+    public CashGamePerformanceRepositoryDatastore()
     {
-        return CashGamePerformance.class.getName().substring(CashGamePerformance.class.getName().lastIndexOf(".") + 1);
-    }
-
-    private CashGamePerformanceRepositoryDatastore()
-    {
-        datastore = DatastoreServiceFactory.getDatastoreService();
-        periodStore = PeriodRepositoryDatastore.INSTANCE;
-        playerRepo = PlayerRepositoryDatastore.INSTANCE;
-    }
-
-    @Override
-    public Collection<CashGamePerformance> find(Period period, Stake stake)
-    {
-        try
-        {
-            PreparedQuery pq = getPerf(period, stake);
-            return find(pq);
-        } catch (EntityNotFoundException e)
-        {
-            // TODO @rqu improve this
-            e.printStackTrace();
-        }
-        return new ArrayList<CashGamePerformance>();
-    }
-
-    @Override
-    public Collection<CashGamePerformance> find(Player player)
-    {
-        try
-        {
-            return find(getPerf(player));
-        } catch (EntityNotFoundException e)
-        {
-            // TODO @rqu improve this
-            e.printStackTrace();
-        }
-        return new ArrayList<CashGamePerformance>();
+        periodRepository = PeriodRepositoryDatastore.INSTANCE;
+        playerRepository = PlayerRepositoryDatastore.INSTANCE;
     }
 
     @Override
     public CashGamePerformance find(Player player, Period period, Stake stake)
     {
-        try
-        {
-            return find(getPerf(player, period, stake)).iterator().next();
-        } catch (EntityNotFoundException e)
-        {
-            // TODO @rqu improve this
-            e.printStackTrace();
-        }
-        return null;
+        return buildEntity(createFilterByPeriodAndPlayerAndStake(player, period, stake));
+    }
+
+    @Override
+    public Collection<CashGamePerformance> find(Period period, Stake stake)
+    {
+        return buildEntities(createFilterByDatesAndStake(period, stake));
     }
 
     @Override
     public Collection<CashGamePerformance> find(Player player, Stake stake)
     {
+        return buildEntities(createFilterByPlayerAndStake(player, stake));
+    }
+
+    @Override
+    public Collection<CashGamePerformance> find(Player player)
+    {
+        return buildEntities(createFilterByModel(PLAYER_KEY, player));
+    }
+
+    @Override
+    public void store(CashGamePerformance performance)
+    {
+        store(performance, createFilterByPeriodAndPlayerAndStake(performance.getPlayer(), performance.getPeriod(), performance.getStake()));
+    }
+
+    @Override
+    protected void storeToEntity(CashGamePerformance performance, Entity entity)
+    {
+        entity.setProperty(ID, performance.getId().toString());
+        entity.setProperty(HANDS, performance.getHands());
+        entity.setProperty(BUY_INS, performance.getBuyIns());
+        entity.setProperty(PLAYER_KEY, getModelDBKey(performance.getPlayer()));
+        entity.setProperty(PERIOD_KEY, getModelDBKey(performance.getPeriod()));
+        entity.setProperty(STAKE, performance.getStake().toString());
+        entity.setProperty(UPDATE, performance.getLastUpdate());
+
+        datastore.put(entity);
+        LOGGER.log(Level.INFO, "Stored/updated in database performance;" + performance);
+    }
+
+    @Override
+    protected String getEntityKind()
+    {
+        return CashGamePerformance.class.getSimpleName();
+    }
+
+    @Override
+    protected CashGamePerformance buildFromDatastoreEntityNotNull(Entity e)
+    {
+        Player player;
+        Period period;
         try
         {
-            return find(getPerf(player, stake));
-        } catch (EntityNotFoundException e)
+            player = playerRepository.find((Key) e.getProperty(PLAYER_KEY));
+            period = periodRepository.find((Key) e.getProperty(PERIOD_KEY));
+        } catch (EntityNotFoundException e1)
         {
-            // TODO @rqu improve this
-            e.printStackTrace();
-        }
-        return new ArrayList<CashGamePerformance>();
-    }
-
-    @Override
-    public Collection<CashGamePerformance> findAll()
-    {
-        ArrayList<CashGamePerformance> list = new ArrayList<CashGamePerformance>();
-
-        Query q = new Query(getCashPerfTypeName());
-
-        for (Entity e : datastore.prepare(q).asIterable())
-        {
-            try
-            {
-                list.add(buildPerfFromEntity(e));
-            } catch (EntityNotFoundException e1)
-            {
-                e1.printStackTrace();
-                // TODO @rqu improve this
-            }
+            throw new RuntimeException(e1);
         }
 
-        return list;
-    }
+        if (period == null || player == null)
+            return null;
 
-    @Override
-    public void remove(CashGamePerformance performance)
-    {
-        PreparedQuery pq = getPerf(performance.getPlayer(), performance.getPeriod(), performance.getStake());
-
-        Iterable<Entity> asIterable = pq.asIterable();
-
-        for (Entity e : asIterable)
-        {
-            datastore.delete(e.getKey());
-            LOGGER.log(Level.FINE, "Deleted database entity;" + e);
-        }
-    }
-
-    @Override
-    public void store(final CashGamePerformance performance)
-    {
-        Validate.notNull(performance, "Performance cannot be null");
-        Date startDate = performance.getPeriod().getStart();
-        Date endDate = performance.getPeriod().getEnd();
-        Validate.notNull(startDate);
-        Validate.notNull(endDate);
-
-        Entity periodEnt = periodStore.getDatastoreEntityFromFilter(periodStore.createFilterByDates(startDate, endDate));
-        LOGGER.log(Level.INFO, "Period found in database;" + periodEnt);
-
-        Entity playerEnt = playerRepo.findEntity(performance.getPlayer().getPlayerName());
-        LOGGER.log(Level.INFO, "Player found in database;" + playerEnt);
-
-        if (playerEnt == null)
-        {
-            findPlayerAgain(performance, playerEnt);
-        }
-
-        store(performance, periodEnt, playerEnt);
-    }
-
-    private void findPlayerAgain(final CashGamePerformance performance, Entity playerEnt)
-    {
-        LOGGER.log(Level.INFO, "Loop to find in database player;" + performance.getPlayer().getPlayerName());
-
-        for (int i = 0; i < 100 && playerEnt == null; i++)
-        {
-            playerEnt = playerRepo.findEntity(performance.getPlayer().getPlayerName());
-        }
-
-    }
-
-    private void store(CashGamePerformance performance, Entity periodEnt, Entity playerEnt)
-    {
-        Validate.notNull(periodEnt, "Period database entity cannot be null to save performance");
-        Validate.notNull(playerEnt, "Player database entity cannot be null to save performance");
-
-        Entity perfData = new Entity(getCashPerfTypeName());
-
-        perfData.setProperty(HANDS, performance.getHands());
-        perfData.setProperty(BUY_INS, performance.getBuyIns());
-        perfData.setProperty(PLAYER_KEY, playerEnt.getKey());
-        perfData.setProperty(PERIOD_KEY, periodEnt.getKey());
-        perfData.setProperty(STAKE, performance.getStake().toString());
-        perfData.setProperty(UPDATE, performance.getLastUpdate());
-        perfData.setProperty(ID, performance.getId().toString());
-
-        datastore.put(perfData);
-        LOGGER.log(Level.FINE, "Performance stored : " + perfData);
-    }
-
-    private CashGamePerformance buildPerfFromEntity(Entity e) throws EntityNotFoundException
-    {
-        Player player = playerRepo.findPlayer((Key) e.getProperty(PLAYER_KEY));
-        Period period = periodStore.find((Key) e.getProperty(PERIOD_KEY));
         Stake stake = Stake.valueOf((String) e.getProperty(STAKE));
         Date lastUpdate = (Date) e.getProperty(UPDATE);
         UUID id = UUID.fromString((String) e.getProperty(ID));
         return new CashGamePerformance(player, period, stake, lastUpdate, id);
     }
 
-    private Collection<CashGamePerformance> find(PreparedQuery pq) throws EntityNotFoundException
+    private Filter createFilterByPeriodAndPlayerAndStake(Player player, Period period, Stake stake)
     {
-        ArrayList<CashGamePerformance> list = new ArrayList<CashGamePerformance>();
-
-        Iterable<Entity> asIterable = pq.asIterable();
-
-        for (Entity e : asIterable)
-        {
-            CashGamePerformance entity = buildPerfFromEntity(e);
-            list.add(entity);
-        }
-
-        return list;
+        Validate.notNull(stake);
+        Validate.notNull(player);
+        Filter compositeFilter = CompositeFilterOperator.and(createFilterByModel(PLAYER_KEY, player), createFilterByStake(stake));
+        compositeFilter = CompositeFilterOperator.and(createFilterByModel(PERIOD_KEY, period), compositeFilter);
+        return compositeFilter;
     }
 
-    private PreparedQuery getPerf(Period period, Stake stake)
+    private Filter createFilterByDatesAndStake(Period period, Stake stake)
     {
-        Date startDate = period.getStart();
-        Date endDate = period.getEnd();
-        Validate.notNull(startDate);
-        Validate.notNull(endDate);
-        Entity periodEnt = periodStore.getDatastoreEntityFromFilter(periodStore.createFilterByDates(startDate, endDate));
-        Filter periodFilter = new FilterPredicate(PERIOD_KEY, FilterOperator.EQUAL, periodEnt.getKey());
-        Filter stakeFilter = new FilterPredicate(STAKE, FilterOperator.EQUAL, stake.toString());
-        Filter compositeFilter = CompositeFilterOperator.and(periodFilter, stakeFilter);
-        Query q = new Query(getCashPerfTypeName()).setFilter(compositeFilter);
-
-        return datastore.prepare(q);
+        Validate.notNull(stake);
+        Validate.notNull(period);
+        Filter compositeFilter = CompositeFilterOperator.and(createFilterByModel(PERIOD_KEY, period), createFilterByStake(stake));
+        return compositeFilter;
     }
 
-    private PreparedQuery getPerf(Player player)
+    private Filter createFilterByPlayerAndStake(Player player, Stake stake)
     {
-        Entity playerEnt = playerRepo.findEntity(player.getPlayerName());
-        Filter playerFilter = new FilterPredicate(PLAYER_KEY, FilterOperator.EQUAL, playerEnt.getKey());
-        return datastore.prepare(new Query(getCashPerfTypeName()).setFilter(playerFilter));
+        Validate.notNull(stake);
+        Validate.notNull(player);
+        Filter compositeFilter = CompositeFilterOperator.and(createFilterByModel(PLAYER_KEY, player), createFilterByStake(stake));
+        return compositeFilter;
     }
 
-    private PreparedQuery getPerf(Player player, Period period, Stake stake)
-    {
-        Entity playerEnt = playerRepo.findEntity(player.getPlayerName());
-        Filter playerFilter = new FilterPredicate(PLAYER_KEY, FilterOperator.EQUAL, playerEnt.getKey());
-        Date startDate = period.getStart();
-        Date endDate = period.getEnd();
-        Validate.notNull(startDate);
-        Validate.notNull(endDate);
-        Entity periodEnt = periodStore.getDatastoreEntityFromFilter(periodStore.createFilterByDates(startDate, endDate));
-        Filter periodFilter = new FilterPredicate(PERIOD_KEY, FilterOperator.EQUAL, periodEnt.getKey());
-        Filter stakeFilter = new FilterPredicate(STAKE, FilterOperator.EQUAL, stake.toString());
-        Filter compositeFilter = CompositeFilterOperator.and(periodFilter, stakeFilter);
-        compositeFilter = CompositeFilterOperator.and(playerFilter, compositeFilter);
-        return datastore.prepare(new Query(getCashPerfTypeName()).setFilter(compositeFilter));
-    }
+    // private Filter createFilterByPlayerDBEntity(Player player)
+    // {
+    // Entity playerEnt = getPlayerEntity(player);
+    // Filter playerFilter = new FilterPredicate(PLAYER_KEY, FilterOperator.EQUAL, playerEnt.getKey());
+    // return playerFilter;
+    // }
 
-    private PreparedQuery getPerf(Player player, Stake stake)
-    {
-        Entity playerEnt = playerRepo.findEntity(player.getPlayerName());
-        Filter playerFilter = new FilterPredicate(PLAYER_KEY, FilterOperator.EQUAL, playerEnt.getKey());
-        Filter stakeFilter = new FilterPredicate(STAKE, FilterOperator.EQUAL, stake.toString());
-        Filter compositeFilter = CompositeFilterOperator.and(playerFilter, stakeFilter);
-        return datastore.prepare(new Query(getCashPerfTypeName()).setFilter(compositeFilter));
-    }
+    // private Entity getPlayerEntity(Player player)
+    // {
+    // return playerRepository.getDatastoreEntityFromFilter(createFilterById(player.getId()));
+    // }
 
-    @Override
-    public CashGamePerformance find(String id)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
+    // private Filter createFilterByPeriodDBEntity(Period period)
+    // {
+    // Entity periodEnt = getPeriodEntity(period);
+    // Filter periodFilter = new FilterPredicate(PERIOD_KEY, FilterOperator.EQUAL, periodEnt.getKey());
+    // return periodFilter;
+    // }
+    //
+    // private Entity getPeriodEntity(Period period)
+    // {
+    // return periodRepository.getDatastoreEntityFromFilter(createFilterByDates(period.getStart(), period.getEnd()));
+    // }
 }

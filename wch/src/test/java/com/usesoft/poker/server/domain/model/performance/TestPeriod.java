@@ -15,23 +15,15 @@ public class TestPeriod {
     @Test
     public void testInvariant() {
         try {
-            new Period(null, new Date(), "");
+            new Period(null, new Date());
             fail("Start date should be mandatory");
         } catch (Exception e) {
         }
 
         try {
-            new Period(new Date(), null, "");
+            new Period(new Date(), null);
             fail("End date should be mandatory");
         } catch (Exception e) {
-        }
-
-        try
-        {
-            new Period(new Date(), new Date(), null);
-            fail("Id should be mandatory");
-        } catch (Exception e)
-        {
         }
     }
 
@@ -46,9 +38,9 @@ public class TestPeriod {
         assertFalse(startDate.equals(startDate2));
         assertFalse(endDate.equals(endDate2));
 
-        Period p = new Period(startDate, endDate, Period.generateId(startDate, endDate));
-        Period p2 = new Period(startDate, endDate, Period.generateId(startDate, endDate));
-        Period p3 = new Period(startDate2, endDate2, Period.generateId(startDate2, endDate2));
+        Period p = new Period(startDate, endDate);
+        Period p2 = new Period(startDate, endDate);
+        Period p3 = new Period(startDate2, endDate2);
 
         EntityUtil.checkValues(p, p2, p3);
 

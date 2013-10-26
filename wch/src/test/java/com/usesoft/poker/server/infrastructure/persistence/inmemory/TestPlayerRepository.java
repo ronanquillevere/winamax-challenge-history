@@ -26,7 +26,7 @@ public class TestPlayerRepository {
         Player ronan = new Player(ronanFN);
         repo.store(ronan);
 
-        assertEquals(repo.find(ronanFN), ronan);
+        assertEquals(repo.findById(ronanFN), ronan);
         assertEquals(1,repo.findAll().size());
 
         repo.store(ronan);

@@ -26,9 +26,9 @@ public class PeriodRepositoryDatastore extends GoogleDatastore<Period> implement
     @Override
     protected void storeToEntity(Period period, Entity dbEntity)
     {
+        dbEntity.setProperty(ID, period.getId());
         dbEntity.setProperty(START_DATE, period.getStart());
         dbEntity.setProperty(END_DATE, period.getEnd());
-        dbEntity.setProperty(ID, period.getId());
 
         datastore.put(dbEntity);
         LOGGER.log(Level.INFO, "Stored/updated in database period;" + period);
@@ -47,12 +47,20 @@ public class PeriodRepositoryDatastore extends GoogleDatastore<Period> implement
     @Override
     protected Period buildFromDatastoreEntityNotNull(Entity e)
     {
-        return new Period((Date) e.getProperty(START_DATE), (Date) e.getProperty(END_DATE), (String) e.getProperty(ID));
+        Date start = (Date) e.getProperty(START_DATE);
+        Date end = (Date) e.getProperty(END_DATE);
+        return new Period(start, end);
     }
 
     @Override
     protected String getEntityKind()
     {
-        return Period.class.getName().substring(Period.class.getName().lastIndexOf(".") + 1);
+        return Period.class.getSimpleName();
+    }
+
+    @Override
+    public void remove(Period entity)
+    {
+        // TODO Auto-generated method stub
     }
 }

@@ -30,7 +30,7 @@ public class TestPeriodRepository {
         Date d1b = new Date(d1.getTime());
         Date d2b = new Date(d2.getTime());
 
-        Period period1 = new Period(d1, d2, Period.generateId(d1, d2));
+        Period period1 = new Period(d1, d2);
 
         repo.store(period1);
 
@@ -42,7 +42,7 @@ public class TestPeriodRepository {
 
         Date start = new Date();
         Date end = new Date();
-        repo.store(new Period(start, end, Period.generateId(start, end)));
+        repo.store(new Period(start, end));
         assertEquals(2,repo.findAll().size());
     }
 }

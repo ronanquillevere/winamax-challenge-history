@@ -5,6 +5,7 @@ import java.util.Collection;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -22,4 +23,12 @@ public class CashGamePerformanceResource {
         return CashGamePerformanceRepositoryDatastore.INSTANCE.findAll();
     }
 
+
+    @GET
+    @Path("{perfId}")
+    public CashGamePerformance getObject(@PathParam("perfId") String perfId)
+    {
+        CashGamePerformance p = CashGamePerformanceRepositoryDatastore.INSTANCE.findById(perfId);
+        return p;
+    }
 }

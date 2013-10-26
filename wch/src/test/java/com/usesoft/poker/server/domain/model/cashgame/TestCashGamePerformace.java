@@ -17,7 +17,7 @@ public class TestCashGamePerformace {
     public void testInvariant() {
         Date start = new Date();
         Date end = new Date();
-        Period period = new Period(start, end, Period.generateId(start, end));
+        Period period = new Period(start, end);
         Player player = new Player("Ronan");
         Date d = new Date();
         try {
@@ -75,9 +75,9 @@ public class TestCashGamePerformace {
         Date endDate = new Date(time + 20);
         Date endDate2 = new Date(time + 30);
 
-        Period period = new Period(startDate, endDate, Period.generateId(startDate, endDate));
-        Period period2 = new Period(startDate, endDate, Period.generateId(startDate, endDate));
-        Period period3 = new Period(startDate2, endDate2, Period.generateId(startDate2, endDate2));
+        Period period = new Period(startDate, endDate);
+        Period period2 = new Period(startDate, endDate);
+        Period period3 = new Period(startDate2, endDate2);
 
         Player player1 = new Player("player");
         Player player2 = new Player("player");
@@ -99,7 +99,7 @@ public class TestCashGamePerformace {
     public void test() {
         Date start = new Date();
         Date end = new Date(start.getTime() + 10);
-        Period period = new Period(start, end, Period.generateId(start, end));
+        Period period = new Period(start, end);
         Player player1 = new Player("player");
 
         CashGamePerformance p = new CashGamePerformance(player1, period, Stake.Micro, new Date(), UUID.randomUUID());

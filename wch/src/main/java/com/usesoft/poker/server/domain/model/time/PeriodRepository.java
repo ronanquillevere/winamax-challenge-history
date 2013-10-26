@@ -1,15 +1,10 @@
 package com.usesoft.poker.server.domain.model.time;
 
-import java.util.Collection;
 import java.util.Date;
 
-public interface PeriodRepository {
+import com.usesoft.poker.server.domain.common.Repository;
 
-    Collection<Period> findAll();
-
-    void store(Period period);
-
+public interface PeriodRepository extends Repository<Period>
+{
     Period find(Date startDate, Date endDate);
-
-    Period find(String id);
 }
