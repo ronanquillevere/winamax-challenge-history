@@ -2,6 +2,7 @@ package com.usesoft.poker.server.infrastructure.persistence.inmemory;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.usesoft.poker.server.domain.model.player.Player;
@@ -38,6 +39,13 @@ public class PlayerRepositoryInMemory implements PlayerRepository {
 
     @Override
     public void remove(Player entity)
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void store(List<Player> entity)
     {
         // TODO Auto-generated method stub
 

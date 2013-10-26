@@ -95,23 +95,34 @@ public abstract class GoogleDatastore<T extends BaseEntity<T>>
         return buildFromDatastoreEntityNotNull(entitity);
     }
 
-    protected abstract void storeToEntity(T model, Entity entity);
+    public void store(T model)
+    {
+        Entity entity = new Entity(model.getType(), model.getId());
+        fillDBEntityFromModel(model, entity);
+        datastore.put(entity);
+        LOGGER.log(Level.INFO, "Stored/updated in database model;" + model);
+    }
+
+    public void store(List<T> entities)
+    {
+        List<Entity> dbEntities = new ArrayList<Entity>();
+    
+        for (T p : entities)
+        {
+            Entity e = new Entity(p.getType(), p.getId());
+            fillDBEntityFromModel(p, e);
+            dbEntities.add(e);
+        }
+    
+        datastore.put(dbEntities);
+    }
 
     protected abstract String getEntityKind();
 
     protected abstract T buildFromDatastoreEntityNotNull(Entity entity);
 
-    protected void store(T model, Filter filter)
-    {
-        Entity entity = getDatastoreEntityFromFilter(filter);
+    protected abstract void fillDBEntityFromModel(T model, Entity dbEntity);
 
-        if (entity == null)
-            entity = new Entity(model.getType(), model.getId());
-        else
-            LOGGER.log(Level.FINE, "Found already in database model entity;" + model);
-
-        storeToEntity(model, entity);
-    }
 
     protected <M extends BaseEntity<M>> Key getModelDBKey(M model)
     {

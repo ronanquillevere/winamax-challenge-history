@@ -70,11 +70,7 @@ public class CashGameParser
 
     private void storePlayers(List<Player> players)
     {
-        for (Player player : players)
-        {
-            playerRepo.store(player);
-        }
-
+        playerRepo.store(players);
         LOGGER.log(Level.INFO, "Stored players number;" + players.size());
     }
 
@@ -86,10 +82,7 @@ public class CashGameParser
 
     private void storePerfs(List<CashGamePerformance> perfs)
     {
-        for (CashGamePerformance p : perfs)
-        {
-            perfRepository.store(p);
-        }
+        perfRepository.store(perfs);
         LOGGER.log(Level.INFO, "Stored perfs number;" + perfs.size());
     }
 

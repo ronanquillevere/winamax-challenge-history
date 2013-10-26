@@ -164,4 +164,11 @@ CashGamePerformanceRepository {
         // TODO Auto-generated method stub
         return null;
     }
+
+    @Override
+    public void store(List<CashGamePerformance> entity)
+    {
+        // TODO Auto-generated method stub
+
+    }
 }

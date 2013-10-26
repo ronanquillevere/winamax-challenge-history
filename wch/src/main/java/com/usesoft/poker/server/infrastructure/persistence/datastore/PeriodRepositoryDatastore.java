@@ -1,7 +1,6 @@
 package com.usesoft.poker.server.infrastructure.persistence.datastore;
 
 import java.util.Date;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.Validate;
@@ -18,20 +17,11 @@ public class PeriodRepositoryDatastore extends GoogleDatastore<Period> implement
     private static final Logger LOGGER = Logger.getLogger(PeriodRepositoryDatastore.class.getName());
 
     @Override
-    public void store(Period period)
-    {
-        store(period, createFilterByDates(period.getStart(), period.getEnd()));
-    }
-
-    @Override
-    protected void storeToEntity(Period period, Entity dbEntity)
+    protected void fillDBEntityFromModel(Period period, Entity dbEntity)
     {
         dbEntity.setProperty(ID, period.getId());
         dbEntity.setProperty(START_DATE, period.getStart());
         dbEntity.setProperty(END_DATE, period.getEnd());
-
-        datastore.put(dbEntity);
-        LOGGER.log(Level.INFO, "Stored/updated in database period;" + period);
     }
 
     @Override
@@ -63,4 +53,5 @@ public class PeriodRepositoryDatastore extends GoogleDatastore<Period> implement
     {
         // TODO Auto-generated method stub
     }
+
 }

@@ -3,8 +3,6 @@ package com.usesoft.poker.server.infrastructure.persistence.datastore;
 import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang3.Validate;
 
@@ -22,8 +20,6 @@ import com.usesoft.poker.server.domain.model.time.Period;
 public class CashGamePerformanceRepositoryDatastore extends GoogleDatastore<CashGamePerformance> implements CashGamePerformanceRepository
 {
     public static final CashGamePerformanceRepositoryDatastore INSTANCE = new CashGamePerformanceRepositoryDatastore();
-
-    private static final Logger LOGGER = Logger.getLogger(CashGamePerformanceRepositoryDatastore.class.getName());
 
     private PeriodRepositoryDatastore periodRepository;
 
@@ -60,13 +56,7 @@ public class CashGamePerformanceRepositoryDatastore extends GoogleDatastore<Cash
     }
 
     @Override
-    public void store(CashGamePerformance performance)
-    {
-        store(performance, createFilterByPeriodAndPlayerAndStake(performance.getPlayer(), performance.getPeriod(), performance.getStake()));
-    }
-
-    @Override
-    protected void storeToEntity(CashGamePerformance performance, Entity entity)
+    protected void fillDBEntityFromModel(CashGamePerformance performance, Entity entity)
     {
         entity.setProperty(ID, performance.getId().toString());
         entity.setProperty(HANDS, performance.getHands());
@@ -75,9 +65,6 @@ public class CashGamePerformanceRepositoryDatastore extends GoogleDatastore<Cash
         entity.setProperty(PERIOD_KEY, getModelDBKey(performance.getPeriod()));
         entity.setProperty(STAKE, performance.getStake().toString());
         entity.setProperty(UPDATE, performance.getLastUpdate());
-
-        datastore.put(entity);
-        LOGGER.log(Level.INFO, "Stored/updated in database performance;" + performance);
     }
 
     @Override
@@ -133,28 +120,4 @@ public class CashGamePerformanceRepositoryDatastore extends GoogleDatastore<Cash
         Filter compositeFilter = CompositeFilterOperator.and(createFilterByModel(PLAYER_KEY, player), createFilterByStake(stake));
         return compositeFilter;
     }
-
-    // private Filter createFilterByPlayerDBEntity(Player player)
-    // {
-    // Entity playerEnt = getPlayerEntity(player);
-    // Filter playerFilter = new FilterPredicate(PLAYER_KEY, FilterOperator.EQUAL, playerEnt.getKey());
-    // return playerFilter;
-    // }
-
-    // private Entity getPlayerEntity(Player player)
-    // {
-    // return playerRepository.getDatastoreEntityFromFilter(createFilterById(player.getId()));
-    // }
-
-    // private Filter createFilterByPeriodDBEntity(Period period)
-    // {
-    // Entity periodEnt = getPeriodEntity(period);
-    // Filter periodFilter = new FilterPredicate(PERIOD_KEY, FilterOperator.EQUAL, periodEnt.getKey());
-    // return periodFilter;
-    // }
-    //
-    // private Entity getPeriodEntity(Period period)
-    // {
-    // return periodRepository.getDatastoreEntityFromFilter(createFilterByDates(period.getStart(), period.getEnd()));
-    // }
 }
