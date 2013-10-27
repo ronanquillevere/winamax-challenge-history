@@ -2,7 +2,6 @@ package com.usesoft.poker.server.application;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -88,16 +87,8 @@ public class CashGameParser
 
     private void clean(Stake stake, Period period, Date timestamp)
     {
-        Collection<CashGamePerformance> perfs = perfRepository.find(period, stake);
-
-        for (CashGamePerformance cashGamePerformance : perfs)
-        {
-            if (!cashGamePerformance.getLastUpdate().equals(timestamp))
-            {
-                perfRepository.remove(cashGamePerformance);
-                LOGGER.log(Level.INFO, "Removed performace;" + cashGamePerformance);
-            }
-        }
+        List<CashGamePerformance> perfs = perfRepository.findOutdated(period, stake, timestamp);
+        perfRepository.remove(perfs);
     }
 
     private void extract(Document document, Stake stake, Period period, List<CashGamePerformance> perfs, List<Player> players, Date timestamp)

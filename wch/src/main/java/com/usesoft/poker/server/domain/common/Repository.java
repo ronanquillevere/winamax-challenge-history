@@ -14,4 +14,6 @@ public interface Repository<T>
     void store(List<T> entity);
 
     void remove(T entity);
+
+    void remove(List<T> entity);
 }

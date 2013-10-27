@@ -106,14 +106,14 @@ public abstract class GoogleDatastore<T extends BaseEntity<T>>
     public void store(List<T> entities)
     {
         List<Entity> dbEntities = new ArrayList<Entity>();
-    
+
         for (T p : entities)
         {
             Entity e = new Entity(p.getType(), p.getId());
             fillDBEntityFromModel(p, e);
             dbEntities.add(e);
         }
-    
+
         datastore.put(dbEntities);
     }
 
@@ -175,7 +175,7 @@ public abstract class GoogleDatastore<T extends BaseEntity<T>>
         return buildFromDatastoreEntity(findEntity);
     }
 
-    protected Collection<T> buildEntities(Filter f)
+    protected List<T> buildEntities(Filter f)
     {
         List<Entity> findEntities = getDatastoreEntitiesFromFilter(f);
         return buildFromDatastoreEntites(findEntities);
@@ -210,7 +210,22 @@ public abstract class GoogleDatastore<T extends BaseEntity<T>>
     {
         Entity fake = new Entity(modelEntity.getType(), modelEntity.getId());
         datastore.delete(fake.getKey());
-        LOGGER.log(Level.FINE, "Deleted database entity;" + modelEntity);
+        LOGGER.log(Level.INFO, "Deleted database entity;" + modelEntity);
+    }
+
+    public void remove(List<T> modelEntities)
+    {
+        List<Key> dbKeys = new ArrayList<Key>();
+
+        for (T m : modelEntities)
+        {
+            Entity e = new Entity(m.getType(), m.getId());
+            dbKeys.add(e.getKey());
+            LOGGER.log(Level.INFO, "Add model entity to delete;" + m);
+        }
+
+        datastore.delete(dbKeys);
+        LOGGER.log(Level.INFO, "Deleted database entities size;" + dbKeys.size());
     }
 
     private static final Logger LOGGER = Logger.getLogger(GoogleDatastore.class.getName());

@@ -51,4 +51,11 @@ public class PlayerRepositoryInMemory implements PlayerRepository {
 
     }
 
+    @Override
+    public void remove(List<Player> entity)
+    {
+        // TODO Auto-generated method stub
+
+    }
+
 }

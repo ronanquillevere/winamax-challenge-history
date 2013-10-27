@@ -33,7 +33,7 @@ implements Filterable<CashGamePerformance> {
 
     @Override
     public String toString() {
-        return "Cash game - " + stake.toString() + " - " + period.toString() + " - " + player.toString() + " - " +   hands + " - " + buyIns;
+        return "Cash game - " + id + " - " + stake.toString() + " - " + period.toString() + " - " + player.toString() + " - " + hands + " - " + buyIns;
     }
 
     @Override

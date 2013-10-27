@@ -2,6 +2,7 @@ package com.usesoft.poker.server.infrastructure.persistence.inmemory;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -44,7 +45,8 @@ CashGamePerformanceRepository {
     }
 
     @Override
-    public Collection<CashGamePerformance> find(Period period, Stake stake) {
+    public List<CashGamePerformance> find(Period period, Stake stake)
+    {
         List<Filter<CashGamePerformance>> filters = new ArrayList<Filter<CashGamePerformance>>();
         filters.add(new PeriodFilter(period));
         filters.add(new StakeFilter(stake));
@@ -52,7 +54,8 @@ CashGamePerformanceRepository {
     }
 
     @Override
-    public Collection<CashGamePerformance> find(Player player, Stake stake) {
+    public List<CashGamePerformance> find(Player player, Stake stake)
+    {
         List<Filter<CashGamePerformance>> filters = new ArrayList<Filter<CashGamePerformance>>();
         filters.add(new PlayerFilter(player));
         filters.add(new StakeFilter(stake));
@@ -60,7 +63,8 @@ CashGamePerformanceRepository {
     }
 
     @Override
-    public Collection<CashGamePerformance> find(Player player) {
+    public List<CashGamePerformance> find(Player player)
+    {
         List<Filter<CashGamePerformance>> filters = new ArrayList<Filter<CashGamePerformance>>();
         filters.add(new PlayerFilter(player));
         return find(filters);
@@ -170,5 +174,19 @@ CashGamePerformanceRepository {
     {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public void remove(List<CashGamePerformance> entity)
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public List<CashGamePerformance> findOutdated(Period period, Stake stake, Date timestamp)
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

@@ -1,7 +1,6 @@
 package com.usesoft.poker.server.infrastructure.persistence.datastore;
 
 import java.util.Date;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang3.Validate;
 
@@ -13,8 +12,6 @@ import com.usesoft.poker.server.domain.model.time.PeriodRepository;
 public class PeriodRepositoryDatastore extends GoogleDatastore<Period> implements PeriodRepository
 {
     public static final PeriodRepositoryDatastore INSTANCE = new PeriodRepositoryDatastore();
-
-    private static final Logger LOGGER = Logger.getLogger(PeriodRepositoryDatastore.class.getName());
 
     @Override
     protected void fillDBEntityFromModel(Period period, Entity dbEntity)

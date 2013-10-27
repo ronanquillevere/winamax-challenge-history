@@ -68,4 +68,11 @@ public class PeriodRepositoryInMemory implements PeriodRepository {
         // TODO Auto-generated method stub
 
     }
+
+    @Override
+    public void remove(List<Period> entity)
+    {
+        // TODO Auto-generated method stub
+
+    }
 }

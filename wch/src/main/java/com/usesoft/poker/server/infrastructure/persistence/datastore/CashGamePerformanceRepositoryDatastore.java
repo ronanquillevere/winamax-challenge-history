@@ -1,7 +1,7 @@
 package com.usesoft.poker.server.infrastructure.persistence.datastore;
 
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang3.Validate;
@@ -11,6 +11,8 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.usesoft.poker.server.domain.model.cashgame.CashGamePerformance;
 import com.usesoft.poker.server.domain.model.cashgame.CashGamePerformanceRepository;
 import com.usesoft.poker.server.domain.model.cashgame.Stake;
@@ -38,19 +40,19 @@ public class CashGamePerformanceRepositoryDatastore extends GoogleDatastore<Cash
     }
 
     @Override
-    public Collection<CashGamePerformance> find(Period period, Stake stake)
+    public List<CashGamePerformance> find(Period period, Stake stake)
     {
         return buildEntities(createFilterByDatesAndStake(period, stake));
     }
 
     @Override
-    public Collection<CashGamePerformance> find(Player player, Stake stake)
+    public List<CashGamePerformance> find(Player player, Stake stake)
     {
         return buildEntities(createFilterByPlayerAndStake(player, stake));
     }
 
     @Override
-    public Collection<CashGamePerformance> find(Player player)
+    public List<CashGamePerformance> find(Player player)
     {
         return buildEntities(createFilterByModel(PLAYER_KEY, player));
     }
@@ -93,7 +95,10 @@ public class CashGamePerformanceRepositoryDatastore extends GoogleDatastore<Cash
         Stake stake = Stake.valueOf((String) e.getProperty(STAKE));
         Date lastUpdate = (Date) e.getProperty(UPDATE);
         UUID id = UUID.fromString((String) e.getProperty(ID));
-        return new CashGamePerformance(player, period, stake, lastUpdate, id);
+        CashGamePerformance cashGamePerformance = new CashGamePerformance(player, period, stake, lastUpdate, id);
+        cashGamePerformance.setBuyIns((Double) e.getProperty(BUY_INS));
+        cashGamePerformance.setHands((Long) e.getProperty(HANDS));
+        return cashGamePerformance;
     }
 
     private Filter createFilterByPeriodAndPlayerAndStake(Player player, Period period, Stake stake)
@@ -119,5 +124,21 @@ public class CashGamePerformanceRepositoryDatastore extends GoogleDatastore<Cash
         Validate.notNull(player);
         Filter compositeFilter = CompositeFilterOperator.and(createFilterByModel(PLAYER_KEY, player), createFilterByStake(stake));
         return compositeFilter;
+    }
+
+    private static Filter createFilterNotLastUpdated(Date timestamp)
+    {
+        Filter stakeFilter = new FilterPredicate(UPDATE, FilterOperator.NOT_EQUAL, timestamp);
+        return stakeFilter;
+    }
+
+    @Override
+    public List<CashGamePerformance> findOutdated(Period period, Stake stake, Date timestamp)
+    {
+        Validate.notNull(stake);
+        Validate.notNull(period);
+        Filter compositeFilter = CompositeFilterOperator.and(createFilterByModel(PERIOD_KEY, period), createFilterByStake(stake));
+        compositeFilter = CompositeFilterOperator.and(createFilterNotLastUpdated(timestamp), compositeFilter);
+        return buildEntities(compositeFilter);
     }
 }
