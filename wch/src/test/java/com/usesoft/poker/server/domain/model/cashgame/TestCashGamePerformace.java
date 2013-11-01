@@ -22,28 +22,28 @@ public class TestCashGamePerformace {
         Date d = new Date();
         try {
             @SuppressWarnings("unused")
-            CashGamePerformance p = new CashGamePerformance(null, period, Stake.Micro, d, UUID.randomUUID());
+            CashGamePerformance p = new CashGamePerformance(null, period, Stake.Micro, d, 0, 0, UUID.randomUUID());
             fail("Player is mandatory");
         } catch (Exception e) {
         }
 
         try {
             @SuppressWarnings("unused")
-            CashGamePerformance p = new CashGamePerformance(player, null, Stake.Micro, d, UUID.randomUUID());
+            CashGamePerformance p = new CashGamePerformance(player, null, Stake.Micro, d, 0, 0, UUID.randomUUID());
             fail("Period is mandatory");
         } catch (Exception e) {
         }
 
         try {
             @SuppressWarnings("unused")
-            CashGamePerformance p = new CashGamePerformance(player, period, null, d, UUID.randomUUID());
+            CashGamePerformance p = new CashGamePerformance(player, period, null, d, 0, 0, UUID.randomUUID());
             fail("Stake is mandatory");
         } catch (Exception e) {
         }
 
         try {
             @SuppressWarnings("unused")
-            CashGamePerformance p = new CashGamePerformance(player, period, Stake.Micro, null, UUID.randomUUID());
+            CashGamePerformance p = new CashGamePerformance(player, period, Stake.Micro, null, 0, 0, UUID.randomUUID());
             fail("Last Update is mandatory");
         } catch (Exception e) {
         }
@@ -51,16 +51,14 @@ public class TestCashGamePerformace {
         try
         {
             @SuppressWarnings("unused")
-            CashGamePerformance p = new CashGamePerformance(player, period, Stake.Micro, d, null);
+            CashGamePerformance p = new CashGamePerformance(player, period, Stake.Micro, d, 0, 0, null);
             fail("Id is mandatory");
         } catch (Exception e)
         {
         }
 
-        CashGamePerformance p = new CashGamePerformance(player, period, Stake.Micro, d, UUID.randomUUID());
-
         try {
-            p.setHands(-2);
+            new CashGamePerformance(player, period, Stake.Micro, d, 0, -2, UUID.randomUUID());
             fail("Number of hands should be positive");
         } catch (Exception e) {
         }
@@ -87,9 +85,9 @@ public class TestCashGamePerformace {
         UUID uuid2 = UUID.fromString(uuid1.toString());
         UUID uuid3 = UUID.randomUUID();
 
-        CashGamePerformance p = new CashGamePerformance(player1, period, Stake.Micro, new Date(), uuid1);
-        CashGamePerformance p2 = new CashGamePerformance(player2, period2, Stake.Micro, new Date(), uuid2);
-        CashGamePerformance p3 = new CashGamePerformance(player3, period3, Stake.Micro, new Date(), uuid3);
+        CashGamePerformance p = new CashGamePerformance(player1, period, Stake.Micro, new Date(), 0, 0, uuid1);
+        CashGamePerformance p2 = new CashGamePerformance(player2, period2, Stake.Micro, new Date(), 0, 0, uuid2);
+        CashGamePerformance p3 = new CashGamePerformance(player3, period3, Stake.Micro, new Date(), 0, 0, uuid3);
 
         EntityUtil.checkValues(p, p2, p3);
     }
@@ -102,7 +100,7 @@ public class TestCashGamePerformace {
         Period period = new Period(start, end);
         Player player1 = new Player("player");
 
-        CashGamePerformance p = new CashGamePerformance(player1, period, Stake.Micro, new Date(), UUID.randomUUID());
+        CashGamePerformance p = new CashGamePerformance(player1, period, Stake.Micro, new Date(), 0, 0, UUID.randomUUID());
 
         assertEquals(start, p.getPeriod().getStart());
         assertEquals(end, p.getPeriod().getEnd());
@@ -111,13 +109,13 @@ public class TestCashGamePerformace {
         assertEquals(0, p.getHands());
         assertEquals(0d, p.getBuyIns(), 0);
 
-        p.setHands(25);
-        p.setBuyIns(12.32d);
+        p = new CashGamePerformance(player1, period, Stake.Micro, new Date(), 12.32d, 25, UUID.randomUUID());
 
         assertEquals(25, p.getHands());
         assertEquals(12.32d, p.getBuyIns(), 0);
 
-        p.setBuyIns(-52.32d);
+        p = new CashGamePerformance(player1, period, Stake.Micro, new Date(), -52.32d, 25, UUID.randomUUID());
+
         assertEquals(-52.32d, p.getBuyIns(), 0);
     }
 

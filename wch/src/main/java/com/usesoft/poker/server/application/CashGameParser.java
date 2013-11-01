@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,12 +48,13 @@ public class CashGameParser
         Validate.notNull(document);
         Validate.notNull(stake);
 
+        List<Player> players = new ArrayList<>();
+        List<CashGamePerformance> perfs = new ArrayList<>();
+
         Date timestamp = CrawlerUtil.getParisTime();
-        // Extraction phase
-        List<CashGamePerformance> perfs = new ArrayList<CashGamePerformance>();
-        List<Player> players = new ArrayList<Player>();
-        Period period = extractPeriod(document);
-        extract(document, stake, period, perfs, players, timestamp);
+        Period period = CrawlerUtil.extractPeriod(document);
+
+        CrawlerUtil.fillPlayersAndPerfs(document, stake, period, timestamp, perfs, players);
 
         // Storing phase
         storePeriod(period);
@@ -66,6 +66,8 @@ public class CashGameParser
 
         LOGGER.log(Level.INFO, "Parsed Cash Game Performances for stake;" + stake);
     }
+
+
 
     private void storePlayers(List<Player> players)
     {
@@ -89,45 +91,5 @@ public class CashGameParser
     {
         List<CashGamePerformance> perfs = perfRepository.findOutdated(period, stake, timestamp);
         perfRepository.remove(perfs);
-    }
-
-    private void extract(Document document, Stake stake, Period period, List<CashGamePerformance> perfs, List<Player> players, Date timestamp)
-    {
-        int numberOfRows = CrawlerUtil.extractNumberOfRows(document);
-
-        for (int i = 1; i <= numberOfRows; i++)
-        {
-            CashGamePerformance perf = extractCashGamePerf(document, i, stake, period, players, timestamp);
-            perfs.add(perf);
-        }
-    }
-
-    private CashGamePerformance extractCashGamePerf(Document document, int index, Stake stake, Period period, List<Player> players, Date now)
-    {
-        Player player = extractPlayer(document, index);
-        players.add(player);
-        int nbHands = CrawlerUtil.extractNumberOfHands(document, index);
-        double buyIns = CrawlerUtil.extractBuyIns(document, index);
-
-        CashGamePerformance perf = new CashGamePerformance(player, period, stake, now, UUID.randomUUID());
-        perf.setHands(nbHands);
-        perf.setBuyIns(buyIns);
-        return perf;
-    }
-
-    private Period extractPeriod(Document document) throws ParseException
-    {
-        String periodAsString = CrawlerUtil.extractDatePeriod(document);
-        Date start = CrawlerUtil.parseStartDate(periodAsString);
-        Date end = CrawlerUtil.parseEndDate(periodAsString);
-
-        return new Period(start, end);
-    }
-
-    private Player extractPlayer(Document document, int i)
-    {
-        String playerName = CrawlerUtil.extractPlayerName(document, i);
-        Player player = new Player(playerName);
-        return player;
     }
 }

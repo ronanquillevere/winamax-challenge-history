@@ -42,17 +42,13 @@ public class TestCashGamePerformanceRepository
         String ronanFN = "ronan";
         Player ronan = new Player(ronanFN);
 
-        CashGamePerformance performance = new CashGamePerformance(ronan, period1, Stake.Micro, new Date(), UUID.randomUUID());
-        performance.setHands(30000);
-        performance.setBuyIns(5.20);
+        CashGamePerformance performance = new CashGamePerformance(ronan, period1, Stake.Micro, new Date(), 5.20, 30000, UUID.randomUUID());
 
         Period period2 = new Period(d3, d4);
         String kimFN = "kim22_12";
         Player kim = new Player(kimFN);
 
-        CashGamePerformance performance2 = new CashGamePerformance(kim, period2, Stake.Small, new Date(), UUID.randomUUID());
-        performance2.setHands(10000);
-        performance2.setBuyIns(1.50);
+        CashGamePerformance performance2 = new CashGamePerformance(kim, period2, Stake.Small, new Date(), 1.50, 10000, UUID.randomUUID());
 
         repo.store(performance);
         repo.store(performance2);
@@ -73,8 +69,7 @@ public class TestCashGamePerformanceRepository
 
         assertEquals(2, repo.findAll().size());
 
-        performance.setHands(35000);
-        performance.setBuyIns(10.00);
+        performance = new CashGamePerformance(ronan, period1, Stake.Micro, new Date(), 10.00, 35000, UUID.randomUUID());
 
         repo.store(performance);
         assertEquals(2, repo.findAll().size());

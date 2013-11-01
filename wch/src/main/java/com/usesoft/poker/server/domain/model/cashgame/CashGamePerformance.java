@@ -16,7 +16,7 @@ public class CashGamePerformance extends BaseEntity<CashGamePerformance>
 implements Filterable<CashGamePerformance> {
 
     public CashGamePerformance(@JsonProperty("player") Player player, @JsonProperty("period") Period period, @JsonProperty("stake") Stake stake,
-            @JsonProperty("lastUpdate") Date lastUpdate, @JsonProperty("id") UUID id)
+            @JsonProperty("lastUpdate") Date lastUpdate, @JsonProperty("buyIns") double buyIns, @JsonProperty("hands") long hands, @JsonProperty("id") UUID id)
     {
         super(id.toString());
 
@@ -25,10 +25,16 @@ implements Filterable<CashGamePerformance> {
         Validate.notNull(stake);
         Validate.notNull(lastUpdate);
         Validate.notNull(id);
+        Validate.notNull(buyIns);
+        Validate.notNull(hands);
+        Validate.isTrue(hands >= 0);
+
         this.player = player;
         this.period = period;
         this.stake = stake;
-        this.setLastUpdate(lastUpdate);
+        this.lastUpdate = lastUpdate;
+        this.buyIns = buyIns;
+        this.hands = hands;
     }
 
     @Override
@@ -68,25 +74,12 @@ implements Filterable<CashGamePerformance> {
         return filter.filter(this);
     }
 
-    public void setHands(long hands) {
-        Validate.isTrue(hands >= 0, "Number of hands must be positive.");
-        this.hands = hands;
-    }
-
-    public void setBuyIns(double buyIns) {
-        this.buyIns = buyIns;
-    }
-
     public Date getLastUpdate() {
         return lastUpdate;
     }
 
-    public void setLastUpdate(Date lastUpdate) {
-        this.lastUpdate = lastUpdate;
-    }
-
-    private long hands = 0;
-    private double buyIns = 0;
+    private final long hands;
+    private final double buyIns;
     private final Player player;
     private final Period period;
     private final Stake stake;

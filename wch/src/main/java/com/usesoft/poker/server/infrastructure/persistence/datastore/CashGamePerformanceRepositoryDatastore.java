@@ -58,6 +58,16 @@ public class CashGamePerformanceRepositoryDatastore extends GoogleDatastore<Cash
     }
 
     @Override
+    public List<CashGamePerformance> findOutdated(Period period, Stake stake, Date timestamp)
+    {
+        Validate.notNull(stake);
+        Validate.notNull(period);
+        Filter compositeFilter = CompositeFilterOperator.and(createFilterByModel(PERIOD_KEY, period), createFilterByStake(stake));
+        compositeFilter = CompositeFilterOperator.and(createFilterNotLastUpdated(timestamp), compositeFilter);
+        return buildEntities(compositeFilter);
+    }
+
+    @Override
     protected void fillDBEntityFromModel(CashGamePerformance performance, Entity entity)
     {
         entity.setProperty(ID, performance.getId().toString());
@@ -95,9 +105,8 @@ public class CashGamePerformanceRepositoryDatastore extends GoogleDatastore<Cash
         Stake stake = Stake.valueOf((String) e.getProperty(STAKE));
         Date lastUpdate = (Date) e.getProperty(UPDATE);
         UUID id = UUID.fromString((String) e.getProperty(ID));
-        CashGamePerformance cashGamePerformance = new CashGamePerformance(player, period, stake, lastUpdate, id);
-        cashGamePerformance.setBuyIns((Double) e.getProperty(BUY_INS));
-        cashGamePerformance.setHands((Long) e.getProperty(HANDS));
+        CashGamePerformance cashGamePerformance = new CashGamePerformance(player, period, stake, lastUpdate, (Double) e.getProperty(BUY_INS), (Long) e.getProperty(HANDS),
+                id);
         return cashGamePerformance;
     }
 
@@ -130,15 +139,5 @@ public class CashGamePerformanceRepositoryDatastore extends GoogleDatastore<Cash
     {
         Filter stakeFilter = new FilterPredicate(UPDATE, FilterOperator.NOT_EQUAL, timestamp);
         return stakeFilter;
-    }
-
-    @Override
-    public List<CashGamePerformance> findOutdated(Period period, Stake stake, Date timestamp)
-    {
-        Validate.notNull(stake);
-        Validate.notNull(period);
-        Filter compositeFilter = CompositeFilterOperator.and(createFilterByModel(PERIOD_KEY, period), createFilterByStake(stake));
-        compositeFilter = CompositeFilterOperator.and(createFilterNotLastUpdated(timestamp), compositeFilter);
-        return buildEntities(compositeFilter);
     }
 }
