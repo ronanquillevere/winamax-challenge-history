@@ -7,21 +7,22 @@ import org.apache.commons.lang3.Validate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.usesoft.poker.server.domain.common.BaseEntity;
-import com.usesoft.poker.server.domain.model.player.Player;
-import com.usesoft.poker.server.domain.model.time.Period;
+import com.usesoft.poker.server.domain.common.BaseEntityVisitor;
+import com.usesoft.poker.server.domain.common.EntityReference;
 import com.usesoft.poker.server.infrastructure.pattern.Filter;
 import com.usesoft.poker.server.infrastructure.pattern.Filterable;
 
 public class CashGamePerformance extends BaseEntity<CashGamePerformance>
 implements Filterable<CashGamePerformance> {
 
-    public CashGamePerformance(@JsonProperty("player") Player player, @JsonProperty("period") Period period, @JsonProperty("stake") Stake stake,
+    public CashGamePerformance(@JsonProperty("playerReference") EntityReference playerReference,
+            @JsonProperty("periodReference") EntityReference periodReference, @JsonProperty("stake") Stake stake,
             @JsonProperty("lastUpdate") Date lastUpdate, @JsonProperty("buyIns") double buyIns, @JsonProperty("hands") long hands, @JsonProperty("id") UUID id)
     {
         super(id.toString());
 
-        Validate.notNull(player);
-        Validate.notNull(period);
+        Validate.notNull(playerReference);
+        Validate.notNull(periodReference);
         Validate.notNull(stake);
         Validate.notNull(lastUpdate);
         Validate.notNull(id);
@@ -29,8 +30,8 @@ implements Filterable<CashGamePerformance> {
         Validate.notNull(hands);
         Validate.isTrue(hands >= 0);
 
-        this.player = player;
-        this.period = period;
+        this.playerReference = playerReference;
+        this.periodReference = periodReference;
         this.stake = stake;
         this.lastUpdate = lastUpdate;
         this.buyIns = buyIns;
@@ -39,18 +40,24 @@ implements Filterable<CashGamePerformance> {
 
     @Override
     public String toString() {
-        return "Cash game - " + id + " - " + stake.toString() + " - " + period.toString() + " - " + player.toString() + " - " + hands + " - " + buyIns;
+        return "Cash game - " + id + " - " + stake.toString() + " - " + periodReference.getId().toString() + " - " + playerReference.getId().toString() + " - "
+                + hands + " - " + buyIns;
     }
 
     @Override
     public boolean sameIdentityAs(CashGamePerformance other)
     {
-        return other != null && getPlayer().sameIdentityAs(other.getPlayer()) && period.sameIdentityAs(other.period) && stake == other.stake
-                && id.equals(other.id);
+        return other != null && id.equals(other.id);
     }
 
-    public Period getPeriod() {
-        return period;
+    public EntityReference getPeriodReference()
+    {
+        return periodReference;
+    }
+
+    public EntityReference getPlayerReference()
+    {
+        return playerReference;
     }
 
     public long getHands() {
@@ -65,10 +72,6 @@ implements Filterable<CashGamePerformance> {
         return stake;
     }
 
-    public Player getPlayer() {
-        return player;
-    }
-
     @Override
     public boolean accept(Filter<CashGamePerformance> filter) {
         return filter.filter(this);
@@ -78,10 +81,16 @@ implements Filterable<CashGamePerformance> {
         return lastUpdate;
     }
 
+    @Override
+    public <IN, OUT> OUT accept(BaseEntityVisitor<IN, OUT> visitor, IN in)
+    {
+        return visitor.visit(this, in);
+    }
+
     private final long hands;
     private final double buyIns;
-    private final Player player;
-    private final Period period;
+    private final EntityReference playerReference;
+    private final EntityReference periodReference;
     private final Stake stake;
 
     private Date lastUpdate;

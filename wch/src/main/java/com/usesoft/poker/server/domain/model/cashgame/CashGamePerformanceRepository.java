@@ -4,8 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import com.usesoft.poker.server.domain.common.Repository;
+import com.usesoft.poker.server.domain.model.period.Period;
 import com.usesoft.poker.server.domain.model.player.Player;
-import com.usesoft.poker.server.domain.model.time.Period;
 
 
 public interface CashGamePerformanceRepository extends Repository<CashGamePerformance>

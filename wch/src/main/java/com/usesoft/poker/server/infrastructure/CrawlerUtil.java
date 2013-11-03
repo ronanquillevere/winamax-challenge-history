@@ -24,10 +24,12 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.usesoft.poker.server.domain.common.EntityReference;
+import com.usesoft.poker.server.domain.common.ReferenceService;
 import com.usesoft.poker.server.domain.model.cashgame.CashGamePerformance;
 import com.usesoft.poker.server.domain.model.cashgame.Stake;
+import com.usesoft.poker.server.domain.model.period.Period;
 import com.usesoft.poker.server.domain.model.player.Player;
-import com.usesoft.poker.server.domain.model.time.Period;
 
 public class CrawlerUtil
 {
@@ -38,7 +40,6 @@ public class CrawlerUtil
     private static final Pattern pattern = Pattern.compile(datePattern);
 
     private static final Logger LOGGER = Logger.getLogger(CrawlerUtil.class.getName());
-
 
     public static Period extractPeriod(Document document) throws ParseException
     {
@@ -107,7 +108,6 @@ public class CrawlerUtil
         return value.replace("<b>", "").replace("</b>", "").trim();
     }
 
-
     // TODO enrich if needed ...
     private static String replaceMonth(String date)
     {
@@ -137,16 +137,33 @@ public class CrawlerUtil
         assertThat(perfs.size()).isEqualTo(0);
         assertThat(players.size()).isEqualTo(0);
 
+        ReferenceService service = new ReferenceService();
+
         List<LineRawData> data = CrawlerUtil.extractData(document);
         for (LineRawData lineRawData : data)
         {
-            Player player = CrawlerUtil.buildPlayerFromLineData(lineRawData);
-            CashGamePerformance perf = CrawlerUtil.buildCashGamePerformanceFromLineData(stake, timestamp, period, lineRawData, player);
-
-            players.add(player);
-            perfs.add(perf);
+            Player player = fillPlayer(players, lineRawData);
+            fillPerformance(stake, period, timestamp, perfs, service, lineRawData, player);
         }
             }
+
+    private static CashGamePerformance fillPerformance(Stake stake, Period period, Date timestamp, List<CashGamePerformance> perfs, ReferenceService service,
+            LineRawData lineRawData, Player player)
+    {
+        EntityReference periodReference = period.accept(service, null);
+        EntityReference playerReference = player.accept(service, null);
+        CashGamePerformance perf = new CashGamePerformance(playerReference, periodReference, stake, timestamp, lineRawData.getBuyIns(), lineRawData.getHands(),
+                UUID.randomUUID());
+        perfs.add(perf);
+        return perf;
+    }
+
+    private static Player fillPlayer(List<Player> players, LineRawData lineRawData)
+    {
+        Player player = CrawlerUtil.buildPlayerFromLineData(lineRawData);
+        players.add(player);
+        return player;
+    }
 
     private static Element getLeaderBoard(Document document)
     {
@@ -227,11 +244,6 @@ public class CrawlerUtil
             content = bold.html();
         }
         return content;
-    }
-
-    public static CashGamePerformance buildCashGamePerformanceFromLineData(Stake stake, Date timestamp, Period period, LineRawData lineRawData, Player player)
-    {
-        return new CashGamePerformance(player, period, stake, timestamp, lineRawData.getBuyIns(), lineRawData.getHands(), UUID.randomUUID());
     }
 
     public static Player buildPlayerFromLineData(LineRawData lineRawData)

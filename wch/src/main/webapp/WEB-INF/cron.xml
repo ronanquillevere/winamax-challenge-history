@@ -3,19 +3,25 @@
   <cron>
     <url>/wch/crawler/cashgame/micro</url>
     <description>Crawl micro cash game performances</description>
-    <schedule>every 9 minutes from 23:40 to 00:24</schedule>
+    <schedule>every 5 minutes from 23:49 to 00:05</schedule>
     <timezone>Europe/Paris</timezone>
   </cron>
   <cron>
     <url>/wch/crawler/cashgame/small</url>
     <description>Crawl small cash game performances</description>
-    <schedule>every 9 minutes from 23:43 to 00:27</schedule>
+    <schedule>every 5 minutes from 23:48 to 00:05</schedule>
     <timezone>Europe/Paris</timezone>
   </cron>
   <cron>
     <url>/wch/crawler/cashgame/medium</url>
     <description>Crawl medium cash game performances</description>
-    <schedule>every 9 minutes from 23:46 to 00:30</schedule>
+    <schedule>every 5 minutes from 23:47 to 00:05</schedule>
+    <timezone>Europe/Paris</timezone>
+  </cron>
+  <cron>
+    <url>/wch/crawler/cashgame/high</url>
+    <description>Crawl medium cash game performances</description>
+    <schedule>every 5 minutes from 23:46 to 00:05</schedule>
     <timezone>Europe/Paris</timezone>
   </cron>
 </cronentries>

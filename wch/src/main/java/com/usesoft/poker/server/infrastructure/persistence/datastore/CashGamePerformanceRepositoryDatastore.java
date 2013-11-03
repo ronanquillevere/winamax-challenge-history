@@ -7,31 +7,22 @@ import java.util.UUID;
 import org.apache.commons.lang3.Validate;
 
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.usesoft.poker.server.domain.common.BaseEntityReference;
+import com.usesoft.poker.server.domain.common.EntityReference;
 import com.usesoft.poker.server.domain.model.cashgame.CashGamePerformance;
 import com.usesoft.poker.server.domain.model.cashgame.CashGamePerformanceRepository;
 import com.usesoft.poker.server.domain.model.cashgame.Stake;
+import com.usesoft.poker.server.domain.model.period.Period;
 import com.usesoft.poker.server.domain.model.player.Player;
-import com.usesoft.poker.server.domain.model.time.Period;
 
 public class CashGamePerformanceRepositoryDatastore extends GoogleDatastore<CashGamePerformance> implements CashGamePerformanceRepository
 {
     public static final CashGamePerformanceRepositoryDatastore INSTANCE = new CashGamePerformanceRepositoryDatastore();
-
-    private PeriodRepositoryDatastore periodRepository;
-
-    private PlayerRepositoryDatastore playerRepository;
-
-    public CashGamePerformanceRepositoryDatastore()
-    {
-        periodRepository = PeriodRepositoryDatastore.INSTANCE;
-        playerRepository = PlayerRepositoryDatastore.INSTANCE;
-    }
 
     @Override
     public CashGamePerformance find(Player player, Period period, Stake stake)
@@ -73,8 +64,8 @@ public class CashGamePerformanceRepositoryDatastore extends GoogleDatastore<Cash
         entity.setProperty(ID, performance.getId().toString());
         entity.setProperty(HANDS, performance.getHands());
         entity.setProperty(BUY_INS, performance.getBuyIns());
-        entity.setProperty(PLAYER_KEY, getModelDBKey(performance.getPlayer()));
-        entity.setProperty(PERIOD_KEY, getModelDBKey(performance.getPeriod()));
+        entity.setProperty(PLAYER_KEY, getModelDBKey(performance.getPlayerReference()));
+        entity.setProperty(PERIOD_KEY, getModelDBKey(performance.getPeriodReference()));
         entity.setProperty(STAKE, performance.getStake().toString());
         entity.setProperty(UPDATE, performance.getLastUpdate());
     }
@@ -88,24 +79,20 @@ public class CashGamePerformanceRepositoryDatastore extends GoogleDatastore<Cash
     @Override
     protected CashGamePerformance buildFromDatastoreEntityNotNull(Entity e)
     {
-        Player player;
-        Period period;
-        try
-        {
-            player = playerRepository.find((Key) e.getProperty(PLAYER_KEY));
-            period = periodRepository.find((Key) e.getProperty(PERIOD_KEY));
-        } catch (EntityNotFoundException e1)
-        {
-            throw new RuntimeException(e1);
-        }
+        EntityReference playerReference;
+        EntityReference periodReference;
 
-        if (period == null || player == null)
-            return null;
+        Key playerKey = (Key) e.getProperty(PLAYER_KEY);
+        playerReference = new BaseEntityReference(playerKey.getName(), playerKey.getKind());
+
+        Key periodKey = (Key) e.getProperty(PERIOD_KEY);
+        periodReference = new BaseEntityReference(periodKey.getName(), periodKey.getKind());
 
         Stake stake = Stake.valueOf((String) e.getProperty(STAKE));
         Date lastUpdate = (Date) e.getProperty(UPDATE);
         UUID id = UUID.fromString((String) e.getProperty(ID));
-        CashGamePerformance cashGamePerformance = new CashGamePerformance(player, period, stake, lastUpdate, (Double) e.getProperty(BUY_INS), (Long) e.getProperty(HANDS),
+        CashGamePerformance cashGamePerformance = new CashGamePerformance(playerReference, periodReference, stake, lastUpdate, (Double) e.getProperty(BUY_INS),
+                (Long) e.getProperty(HANDS),
                 id);
         return cashGamePerformance;
     }

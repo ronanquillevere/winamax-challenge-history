@@ -9,10 +9,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.usesoft.poker.server.domain.model.time.Period;
+import com.usesoft.poker.server.domain.model.period.Period;
 import com.usesoft.poker.server.infrastructure.persistence.datastore.PeriodRepositoryDatastore;
 
-@Path("v1/periods")
+@Path(URLConstants.API_VERSION_1 + URLConstants.ENTITY_PERIODS)
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class PeriodResource {

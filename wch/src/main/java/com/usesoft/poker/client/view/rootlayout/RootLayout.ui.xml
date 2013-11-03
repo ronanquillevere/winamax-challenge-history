@@ -1,0 +1,33 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+
+	<g:DockLayoutPanel unit='EM'>
+		<g:north size='2'>
+			<g:LayoutPanel ui:field='northPanel'></g:LayoutPanel>
+		</g:north>
+		<g:south size='2'>
+			<g:LayoutPanel ui:field='southPanel'></g:LayoutPanel>
+		</g:south>
+		<g:east size='2'>
+			<g:LayoutPanel ui:field='eastPanel'></g:LayoutPanel>
+		</g:east>
+		<g:west size='2'>
+			<g:LayoutPanel ui:field='westPanel'></g:LayoutPanel>
+		</g:west>
+		<g:center>
+			<g:DockLayoutPanel unit='EM'>
+				<g:north size='2'>
+					<g:LayoutPanel ui:field='topPanel'></g:LayoutPanel>
+				</g:north>
+				<g:south size='2'>
+					<g:LayoutPanel ui:field='bottomPanel'></g:LayoutPanel>
+				</g:south>
+				<g:center>
+					<g:LayoutPanel ui:field='centerPanel'></g:LayoutPanel>
+				</g:center>
+			</g:DockLayoutPanel>
+		</g:center>
+	</g:DockLayoutPanel>
+
+
+</ui:UiBinder>

@@ -15,15 +15,18 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.junit.Test;
 
+import com.usesoft.poker.server.domain.common.EntityReference;
+import com.usesoft.poker.server.domain.common.ReferenceService;
 import com.usesoft.poker.server.domain.model.cashgame.CashGamePerformance;
 import com.usesoft.poker.server.domain.model.cashgame.Stake;
+import com.usesoft.poker.server.domain.model.period.Period;
 import com.usesoft.poker.server.domain.model.player.Player;
-import com.usesoft.poker.server.domain.model.time.Period;
 import com.usesoft.poker.server.infrastructure.CrawlerUtil.LineRawData;
 
 public class TestCrawlerUtil
@@ -87,11 +90,17 @@ public class TestCrawlerUtil
         List<Player> players = new ArrayList<>();
         List<CashGamePerformance> perfs = new ArrayList<>();
         Period period = CrawlerUtil.extractPeriod(document);
+        ReferenceService service = new ReferenceService();
+
+        EntityReference periodRef = period.accept(service, null);
 
         for (LineRawData lineRawData : data)
         {
             Player player = CrawlerUtil.buildPlayerFromLineData(lineRawData);
-            CashGamePerformance perf = CrawlerUtil.buildCashGamePerformanceFromLineData(Stake.Micro, new Date(), period, lineRawData, player);
+            EntityReference playerRef = player.accept(service, null);
+
+            CashGamePerformance perf = new CashGamePerformance(playerRef, periodRef, Stake.Micro, new Date(), lineRawData.getBuyIns(), lineRawData.getHands(),
+                    UUID.randomUUID());
 
             players.add(player);
             perfs.add(perf);

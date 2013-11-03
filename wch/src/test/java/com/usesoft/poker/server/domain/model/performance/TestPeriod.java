@@ -8,7 +8,7 @@ import java.util.Date;
 import org.junit.Test;
 
 import com.usesoft.poker.server.domain.model.common.EntityUtil;
-import com.usesoft.poker.server.domain.model.time.Period;
+import com.usesoft.poker.server.domain.model.period.Period;
 
 public class TestPeriod {
 

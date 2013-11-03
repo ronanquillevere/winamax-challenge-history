@@ -22,6 +22,7 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.usesoft.poker.server.domain.common.BaseEntity;
+import com.usesoft.poker.server.domain.common.EntityReference;
 import com.usesoft.poker.server.domain.model.cashgame.Stake;
 
 public abstract class GoogleDatastore<T extends BaseEntity<T>>
@@ -131,6 +132,12 @@ public abstract class GoogleDatastore<T extends BaseEntity<T>>
         return key;
     }
 
+    protected Key getModelDBKey(EntityReference reference)
+    {
+        Entity dbEntity = new Entity(reference.getType(), reference.getId());
+        Key key = dbEntity.getKey();
+        return key;
+    }
 
     protected T buildFromDatastoreEntity(Entity entity)
     {

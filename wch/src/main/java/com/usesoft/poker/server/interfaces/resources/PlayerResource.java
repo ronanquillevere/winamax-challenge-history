@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 import com.usesoft.poker.server.domain.model.player.Player;
 import com.usesoft.poker.server.infrastructure.persistence.datastore.PlayerRepositoryDatastore;
 
-@Path("v1/players")
+@Path(URLConstants.API_VERSION_1 + URLConstants.ENTITY_PLAYERS)
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class PlayerResource {

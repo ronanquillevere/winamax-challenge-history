@@ -6,8 +6,8 @@ import org.apache.commons.lang3.Validate;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query.Filter;
-import com.usesoft.poker.server.domain.model.time.Period;
-import com.usesoft.poker.server.domain.model.time.PeriodRepository;
+import com.usesoft.poker.server.domain.model.period.Period;
+import com.usesoft.poker.server.domain.model.period.PeriodRepository;
 
 public class PeriodRepositoryDatastore extends GoogleDatastore<Period> implements PeriodRepository
 {

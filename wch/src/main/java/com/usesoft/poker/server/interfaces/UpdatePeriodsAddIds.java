@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.usesoft.poker.server.domain.model.time.Period;
+import com.usesoft.poker.server.domain.model.period.Period;
 import com.usesoft.poker.server.infrastructure.persistence.datastore.PeriodRepositoryDatastore;
 
 public class UpdatePeriodsAddIds extends HttpServlet

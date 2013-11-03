@@ -4,10 +4,10 @@
 		<property name="stake" direction="asc" />
 		<property name="buyIns" direction="desc" />
 	</datastore-index>
-	<datastore-index kind="CashGamePerformance" ancestor="false">
+	<!-- <datastore-index kind="CashGamePerformance" ancestor="false">
 		<property name="stake" direction="asc" />
 		<property name="buyIns" direction="asc" />
-	</datastore-index>
+	</datastore-index> -->
 	<datastore-index kind="CashGamePerformance" ancestor="false" source="manual">
         <property name="periodKey" direction="asc"/>
         <property name="stake" direction="asc"/>

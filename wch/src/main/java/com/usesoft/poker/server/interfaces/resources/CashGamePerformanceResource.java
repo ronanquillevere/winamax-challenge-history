@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 import com.usesoft.poker.server.domain.model.cashgame.CashGamePerformance;
 import com.usesoft.poker.server.infrastructure.persistence.datastore.CashGamePerformanceRepositoryDatastore;
 
-@Path("v1/cashgame/performances")
+@Path(URLConstants.API_VERSION_1 + URLConstants.ENTITY_CASHGAME_PERFORMANCES)
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class CashGamePerformanceResource {

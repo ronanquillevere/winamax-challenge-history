@@ -1,4 +1,4 @@
-package com.usesoft.poker.server.domain.model.time;
+package com.usesoft.poker.server.domain.model.period;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -7,6 +7,7 @@ import org.apache.commons.lang3.Validate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.usesoft.poker.server.domain.common.BaseEntity;
+import com.usesoft.poker.server.domain.common.BaseEntityVisitor;
 
 public class Period extends BaseEntity<Period>{
 
@@ -50,6 +51,12 @@ public class Period extends BaseEntity<Period>{
     //Return a copy to avoid modification without permission
     public Date getEnd() {
         return new Date(end.getTime());
+    }
+
+    @Override
+    public <IN, OUT> OUT accept(BaseEntityVisitor<IN, OUT> visitor, IN in)
+    {
+        return visitor.visit(this, in);
     }
 
     private final Date start;
